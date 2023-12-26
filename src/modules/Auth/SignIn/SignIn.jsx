@@ -13,7 +13,7 @@ import {
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
@@ -26,7 +26,6 @@ import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Lottie from 'react-lottie'
 import defaultOptions from '../../../utils/Lotties/OptionsLottie'
-import { useError } from '../../../context/ToastContext'
 
 function Copyright(props) {
   return (
