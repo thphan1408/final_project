@@ -99,6 +99,7 @@ const SignUp = () => {
     mutationFn: (values) => signupAPI(values),
     onSuccess: () => {
       navigate(PATH.ROOT)
+      toast.success('Đăng ký thành công')
     },
     onError: (error) => {
       let errorMessage = 'Đã xảy ra lỗi khi đăng ký.'

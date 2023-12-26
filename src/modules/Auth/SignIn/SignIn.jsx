@@ -92,6 +92,7 @@ const SignIn = () => {
     },
     onSuccess: () => {
       navigate(PATH.DASHBOARD)
+      toast.success('Đăng nhập thành công')
     },
     onError: (error) => {
       if (error.status === 404) {
