@@ -15,3 +15,17 @@ export const signinAPI = async (payload) => {
     }
   }
 }
+
+export const signupAPI = async (payload) => {
+  try {
+    const response = await fetcher.post('/Users/signup', payload)
+    return response.data.content
+  } catch (error) {
+    if (error.response && error.response.status === 400) {
+      const errorData = error.response.data
+      if (errorData.content) {
+        throw { status: 400, message: 'Email đã được sử dụng!' }
+      }
+    }
+  }
+}

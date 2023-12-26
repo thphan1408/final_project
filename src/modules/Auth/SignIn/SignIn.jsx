@@ -13,7 +13,7 @@ import {
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import React, { useState } from 'react'
+import React, { useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
@@ -22,10 +22,11 @@ import { PATH } from '../../../routes/path'
 import { LoadingButton } from '@mui/lab'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { ToastContainer, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Lottie from 'react-lottie'
 import defaultOptions from '../../../utils/Lotties/OptionsLottie'
+import { useError } from '../../../context/ToastContext'
 
 function Copyright(props) {
   return (
@@ -71,7 +72,6 @@ const showErrorToast = (message) => {
 
 const SignIn = () => {
   const navigate = useNavigate()
-  // const [isLoading, setIsLoading] = useState(false)
 
   const {
     handleSubmit,
@@ -109,84 +109,96 @@ const SignIn = () => {
   }
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
       {isPending ? (
-        <Lottie options={defaultOptions} height={'100%'} width={'100%'} />
+        <Lottie
+          options={defaultOptions}
+          style={{
+            width: '40%',
+            height: '40%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            margin: 'auto',
+          }}
+        />
       ) : (
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <Box
-            sx={{
-              marginTop: 8,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign in
-            </Typography>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <TextField
-                margin="normal"
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                error={Boolean(errors.email)}
-                helperText={Boolean(errors.email) && errors.email.message}
-                {...register('email')}
-              />
-              <TextField
-                margin="normal"
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                error={Boolean(errors.passWord)}
-                helperText={Boolean(errors.passWord) && errors.passWord.message}
-                {...register('passWord')}
-              />
-              {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
-              <LoadingButton
-                loading={isPending}
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Sign In
-              </LoadingButton>
-              <Grid container>
-                {/* <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid> */}
-                <Grid item>
-                  <Link to="/sign-up" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
+        <ThemeProvider theme={defaultTheme}>
+          <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <Box
+              sx={{
+                marginTop: 8,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Sign in
+              </Typography>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  error={Boolean(errors.email)}
+                  helperText={Boolean(errors.email) && errors.email.message}
+                  {...register('email')}
+                />
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  error={Boolean(errors.passWord)}
+                  helperText={
+                    Boolean(errors.passWord) && errors.passWord.message
+                  }
+                  {...register('passWord')}
+                />
+                {/* <FormControlLabel
+                  control={<Checkbox value="remember" color="primary" />}
+                  label="Remember me"
+                /> */}
+                <LoadingButton
+                  loading={isPending}
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Sign In
+                </LoadingButton>
+                <Grid container>
+                  {/* <Grid item xs>
+                    <Link href="#" variant="body2">
+                      Forgot password?
+                    </Link>
+                  </Grid> */}
+                  <Grid item>
+                    <Link to="/sign-up" variant="body2">
+                      {"Don't have an account? Sign Up"}
+                    </Link>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </form>
-          </Box>
+              </form>
+            </Box>
 
-          <Copyright sx={{ mt: 8, mb: 4 }} />
-          <ToastContainer />
-        </Container>
+            <Copyright sx={{ mt: 8, mb: 4 }} />
+          </Container>
+        </ThemeProvider>
       )}
-    </ThemeProvider>
+    </>
   )
 }
 
