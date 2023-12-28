@@ -14,7 +14,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, Navigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { signinAPI } from '../../../apis/userAPI'
@@ -26,6 +26,7 @@ import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Lottie from 'react-lottie'
 import defaultOptions from '../../../utils/Lotties/OptionsLottie'
+import { useAuth } from '../../../context/UserContext/UserContext'
 
 function Copyright(props) {
   return (
@@ -71,6 +72,7 @@ const showErrorToast = (message) => {
 
 const SignIn = () => {
   const navigate = useNavigate()
+  const { currentUser, handleSignin: handleSigninContext } = useAuth()
 
   const {
     handleSubmit,
@@ -89,8 +91,9 @@ const SignIn = () => {
     mutationFn: (value) => {
       return signinAPI(value)
     },
-    onSuccess: () => {
-      navigate(PATH.DASHBOARD)
+    onSuccess: (values) => {
+      handleSigninContext(values)
+      navigate(PATH.ADMIN)
       toast.success('Đăng nhập thành công')
     },
     onError: (error) => {

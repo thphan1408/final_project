@@ -222,7 +222,7 @@ const SignUp = () => {
               </LoadingButton>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link to="/" variant="body2">
+                  <Link to={PATH.ROOT} variant="body2">
                     Already have an account? Sign in
                   </Link>
                 </Grid>
