@@ -84,6 +84,7 @@ export default function ProjectTableRow({
               onClick={(event) => {
                 handleOpenMenu(event, 'avatar')
               }}
+              sx={{ cursor: 'pointer' }}
             >
               {members.map((member) => (
                 <Avatar
@@ -143,7 +144,7 @@ export default function ProjectTableRow({
                     <Avatar
                       src={member.avatar}
                       alt={member.name}
-                      sx={{ mr: 2, width: 32, height: 32 }}
+                      sx={{ mr: 1, width: 32, height: 32 }}
                     />
                     {member.name}
                   </Stack>
