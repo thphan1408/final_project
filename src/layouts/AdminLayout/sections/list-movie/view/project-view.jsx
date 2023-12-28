@@ -25,7 +25,20 @@ import TableNoData from '../table-no-data'
 import ProjectTableToolbar from '../project-table-toolbar'
 
 const ProjectView = () => {
+  // Start pagination
   const [page, setPage] = useState(null)
+
+  const [rowsPerPage, setRowsPerPage] = useState(5)
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setPage(0)
+    setRowsPerPage(+event.target.value, 10)
+  }
+  // End pagination
 
   const [order, setOrder] = useState('asc')
 
@@ -34,8 +47,6 @@ const ProjectView = () => {
   const [orderBy, setOrderBy] = useState('projectName')
 
   const [filterName, setFilterName] = useState('')
-
-  const [rowsPerPage, setRowsPerPage] = useState(5)
 
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
@@ -83,15 +94,6 @@ const ProjectView = () => {
       )
     }
     setSelected(newSelected)
-  }
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  }
-
-  const handleChangeRowsPerPage = (event) => {
-    setPage(0)
-    setRowsPerPage(+event.target.value, 10)
   }
 
   const handleFilterByName = (event) => {

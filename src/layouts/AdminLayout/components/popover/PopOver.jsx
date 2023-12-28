@@ -16,7 +16,7 @@ const PopOver = (props) => {
       anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       PaperProps={{
-        sx: { width: 200 },
+        sx: { width: 'auto' },
       }}
     >
       {children}
