@@ -46,13 +46,15 @@ export function applyFilter({ inputData, comparator, filterName }) {
   })
 
   inputData = stabilizedThis?.map((el) => el[0])
+  console.log('input ', inputData)
+  console.log('filterName: ', filterName)
 
   if (filterName) {
-    inputData = inputData.filter(
-      (user) =>
-        user.hoTen.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+    inputData = inputData.filter((user) =>
+      user.userId.toString().includes(filterName)
     )
   }
+  console.log('inputData: ', inputData)
 
   return inputData
 }

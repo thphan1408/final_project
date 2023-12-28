@@ -14,11 +14,11 @@ import IconButton from '@mui/material/IconButton'
 import Label from '../../components/label'
 import Iconify from '../../components/iconify'
 import { Button, TextField } from '@mui/material'
-import ModalView from '../modal/modal'
 import UserEdit from '../user/edit-user'
-import { deleteUserAPI } from '../../../../apis/userAPI'
 import { QueryClient, useMutation } from '@tanstack/react-query'
 import Swal from 'sweetalert2'
+import ModalView from '../../components/modal/modal'
+import { deleteUserAPI } from '../../../../apis/userAPI'
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({
@@ -26,9 +26,7 @@ export default function UserTableRow({
   taiKhoan,
   hoTen,
   email,
-  soDT,
-  matKhau,
-  maLoaiNguoiDung,
+  avatar,
   handleClick,
 }) {
   const queryClient = new QueryClient()
@@ -36,9 +34,7 @@ export default function UserTableRow({
     taiKhoan,
     hoTen,
     email,
-    soDT,
-    matKhau,
-    maLoaiNguoiDung,
+    avatar,
   }
   const [open, setOpen] = useState(null)
   const [openModal, setOpenModal] = useState(false)
@@ -78,6 +74,7 @@ export default function UserTableRow({
     },
   })
   const handleDeleteUser = (taiKhoan) => {
+    console.log('taiKhoan click: ', taiKhoan)
     Swal.fire({
       icon: 'warning',
       title: 'Bạn có chắc chắn muốn xóa user này?',
@@ -91,6 +88,7 @@ export default function UserTableRow({
       return
     })
   }
+
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
@@ -100,13 +98,12 @@ export default function UserTableRow({
 
         <TableCell>{taiKhoan}</TableCell>
 
+        <TableCell>
+          <img src={`${avatar}?w=10&fit=crop&auto=format`} loading="lazy" />{' '}
+        </TableCell>
         <TableCell>{hoTen}</TableCell>
 
         <TableCell>{email}</TableCell>
-
-        <TableCell>{soDT}</TableCell>
-
-        <TableCell>{maLoaiNguoiDung}</TableCell>
 
         <TableCell align="right">
           <IconButton onClick={handleOpenMenu}>

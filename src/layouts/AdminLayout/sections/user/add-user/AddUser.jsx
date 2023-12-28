@@ -20,9 +20,7 @@ import { useForm, Controller } from 'react-hook-form'
 import dayjs from 'dayjs'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { LoadingButton } from '@mui/lab'
-import { GROUP_CODE } from '../../../../../constants'
 import Swal from 'sweetalert2'
-import { addUserApi } from '../../../../../apis/userAPI'
 
 const AddUser = ({ handleClose }) => {
   const queryClient = useQueryClient()
@@ -32,7 +30,6 @@ const AddUser = ({ handleClose }) => {
       matKhau: '',
       email: '',
       soDT: '',
-      maNhom: GROUP_CODE,
       maLoaiNguoiDung: '',
       hoTen: '',
     },

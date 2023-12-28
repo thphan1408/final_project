@@ -135,63 +135,49 @@ const ProjectView = () => {
             onFilterName={handleFilterByName}
           />
 
-          <Scrollbar>
-            <TableContainer sx={{ overflow: 'unset' }}>
-              <Table sx={{ minWidth: 1100 }}>
-                <ProjectTableHead
-                  order={order}
-                  orderBy={orderBy}
-                  rowCount={ListProject?.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleSort}
-                  onSelectAllClick={handleSelectAllClick}
-                  headLabel={[
-                    { id: 'projectName', label: 'Project name' },
-                    { id: 'categoryName', label: 'Category name' },
-                    { id: 'creator', label: 'Creator' },
-                    { id: 'nember', label: 'Nember' },
-                    { id: '' },
-                  ]}
-                />
-                <TableBody>
-                  {dataAllProject
-                    ?.slice(
-                      page * rowsPerPage,
-                      page * rowsPerPage + rowsPerPage
-                    )
-                    .map((project) => (
-                      <ProjectTableRow
-                        key={project.id}
-                        projectName={project.projectName}
-                        categoryName={project.categoryName}
-                        creator={project.creator}
-                        members={project?.members}
-                        selected={selected.indexOf(project.projectName) !== -1}
-                        handleClick={(event) =>
-                          handleClick(event, project.projectName)
-                        }
-                      />
-                    ))}
-
-                  <TableEmptyRows
-                    height={77}
-                    emptyRows={emptyRows(
-                      page,
-                      rowsPerPage,
-                      ListProject?.length
-                    )}
-                  />
-
-                  {notFound && <TableNoData query={filterName} />}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Scrollbar>
+          {/* <Scrollbar> */}
+          <TableContainer sx={{ overflow: 'scrollbar' }}>
+            <Table sx={{ minWidth: 1100 }}>
+              <ProjectTableHead
+                order={order}
+                orderBy={orderBy}
+                rowCount={ListProject?.length}
+                numSelected={selected.length}
+                onRequestSort={handleSort}
+                onSelectAllClick={handleSelectAllClick}
+                headLabel={[
+                  { id: 'projectName', label: 'Project name' },
+                  { id: 'categoryName', label: 'Category name' },
+                  { id: 'creator', label: 'Creator' },
+                  { id: 'nember', label: 'Nember' },
+                  { id: '' },
+                ]}
+              />
+              <TableBody>
+                {dataAllProject
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((project) => (
+                    <ProjectTableRow
+                      key={project.id}
+                      projectName={project.projectName}
+                      categoryName={project.categoryName}
+                      creator={project.creator}
+                      members={project?.members}
+                      selected={selected.indexOf(project.projectName) !== -1}
+                      handleClick={(event) =>
+                        handleClick(event, project.projectName)
+                      }
+                    />
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {/* </Scrollbar> */}
 
           <TablePagination
             page={page || 0}
             component="div"
-            count={ListProject?.length || 0}
+            count={dataAllProject?.length || 0}
             rowsPerPage={rowsPerPage}
             rowsPerPageOptions={[5, 10, 25]}
             onPageChange={handleChangePage}

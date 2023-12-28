@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Outlet, Navigate, useRoutes } from 'react-router-dom'
 
 import DashboardLayout from '../layouts/dashboard'
+import UserPage from '../pages/user'
 
 export const IndexPage = lazy(() => import('../pages/app'))
 // export const BlogPage = lazy(() => import('../pages/blog'))
@@ -26,6 +27,7 @@ export default function Router() {
         { element: <IndexPage />, index: true },
         // { path: 'user', element: <UserPage /> },
         { path: 'project', element: <Project /> },
+        { path: 'user', element: <UserPage /> },
       ],
     },
     // {

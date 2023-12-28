@@ -20,9 +20,9 @@ import TableEmptyRows from '../table-empty-rows'
 import UserTableToolbar from '../user-table-toolbar'
 import { emptyRows, applyFilter, getComparator } from '../utils'
 import { QueryClient, useQuery } from '@tanstack/react-query'
-import { getListUser, getListUserPagination } from '../../../../../apis/userAPI'
-import ModalView from '../../modal/modal'
 import AddUser from '../add-user'
+import ModalView from '../../../components/modal/modal'
+import { getUserListAPI } from '../../../../../apis/userAPI'
 
 // ----------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ export default function UserPage() {
   }
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = data.map((n) => n.taiKhoan)
+      const newSelecteds = userList.map((n) => n.taiKhoan)
       setSelected(newSelecteds)
       return
     }
@@ -77,7 +77,7 @@ export default function UserPage() {
     setSelected(newSelected)
   }
   const handleChangePage = (event, newPage) => {
-    setPage(newPage + 1)
+    setPage(newPage)
   }
 
   const handleChangeRowsPerPage = async (event) => {
@@ -85,28 +85,23 @@ export default function UserPage() {
     setRowsPerPage(parseInt(event.target.value, 10))
   }
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['get-user-pagination', page, rowsPerPage],
-    queryFn: () => getListUserPagination(page, rowsPerPage),
-    enabled: !!rowsPerPage,
-  })
-
-  const { data: userList } = useQuery({
+  const { data: userList = [] } = useQuery({
     queryKey: ['get-list-user'],
-    queryFn: async () => await getListUser(),
+    queryFn: async () => await getUserListAPI(),
   })
+  console.log('userList: ', userList)
 
   const handleFilterByName = (event) => {
     setPage(0)
     setFilterName(event.target.value)
   }
   const dataUser = applyFilter({
-    inputData: data?.items,
+    inputData: userList,
     comparator: getComparator(order, orderBy),
     filterName,
   })
 
-  const notFound = !data?.items.length && !!filterName
+  const notFound = !userList?.length && !!filterName
 
   return (
     <Container>
@@ -135,55 +130,44 @@ export default function UserPage() {
           onFilterName={handleFilterByName}
         />
 
-        <Scrollbar>
-          <TableContainer sx={{ overflow: 'unset' }}>
-            <Table sx={{ minWidth: 800 }}>
-              <UserTableHead
-                order={order}
-                orderBy={orderBy}
-                rowCount={data?.items.length}
-                numSelected={selected.length}
-                onRequestSort={handleSort}
-                onSelectAllClick={handleSelectAllClick}
-                headLabel={[
-                  { id: 'taiKhoan', label: 'Tài khoản' },
-                  { id: 'hoTen', label: 'Họ tên' },
-                  { id: 'email', label: 'Email' },
-                  { id: 'soDT', label: 'Số điện thoại' },
-                  { id: 'maLoaiNguoiDung', label: 'Loại người dùng' },
-                  { id: '' },
-                ]}
-              />
-              <TableBody>
-                {dataUser?.map((user, index) => (
+        <TableContainer>
+          <Table sx={{ minWidth: 800 }}>
+            <UserTableHead
+              order={order}
+              orderBy={orderBy}
+              rowCount={userList?.length || 0}
+              numSelected={selected.length}
+              onRequestSort={handleSort}
+              onSelectAllClick={handleSelectAllClick}
+              headLabel={[
+                { id: 'taiKhoan', label: 'Tài khoản' },
+                { id: 'avatar', label: 'Avatar' },
+                { id: 'hoTen', label: 'Họ tên' },
+                { id: 'email', label: 'Email' },
+                { id: '', label: ' ' },
+              ]}
+            />
+            <TableBody>
+              {dataUser
+                ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((user, index) => (
                   <UserTableRow
                     key={index}
-                    taiKhoan={user.taiKhoan}
-                    hoTen={user.hoTen}
+                    taiKhoan={user.userId}
+                    hoTen={user.name}
                     email={user.email}
-                    soDT={user.soDT}
-                    matKhau={user.matKhau}
-                    maLoaiNguoiDung={user.maLoaiNguoiDung}
+                    avatar={user.avatar}
                     selected={selected.indexOf(user.taiKhoan) !== -1}
                     handleClick={(event) => handleClick(event, user.taiKhoan)}
                   />
                 ))}
-
-                <TableEmptyRows
-                  height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, data?.count)}
-                />
-
-                {notFound && <TableNoData query={filterName} />}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Scrollbar>
-
+            </TableBody>
+          </Table>
+        </TableContainer>
         <TablePagination
-          page={page}
+          page={page || 0}
           component="div"
-          count={userList?.length}
+          count={dataUser?.length || 0}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 20, 50]}

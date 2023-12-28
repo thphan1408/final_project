@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import { Controller, useForm } from 'react-hook-form'
 import { Box, Grid, Stack, TextField, MenuItem } from '@mui/material'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { editUserApi, infoUserAPI } from '../../../../../apis/userAPI'
-import { GROUP_CODE } from '../../../../../constants'
 import Swal from 'sweetalert2'
 import { Button } from 'flowbite-react'
 import { LoadingButton } from '@mui/lab'
@@ -70,7 +68,6 @@ const EditUser = ({ taiKhoan }) => {
     setValue('matKhau', data.matKhau || ' ')
     setValue('email', data.email || ' ')
     setValue('soDT', data.soDT || ' ')
-    setValue('maNhom', GROUP_CODE || ' ')
     setValue('maLoaiNguoiDung', data.maLoaiNguoiDung || ' ')
     setValue('hoTen', data.hoTen || ' ')
   }, [data, setValue, isSubmitSuccessful])
