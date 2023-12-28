@@ -14,28 +14,24 @@ import IconButton from '@mui/material/IconButton'
 import Label from '../../components/label'
 import Iconify from '../../components/iconify'
 import { Button, TextField } from '@mui/material'
-import UserEdit from '../user/edit-user'
-import { QueryClient, useMutation } from '@tanstack/react-query'
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
 import Swal from 'sweetalert2'
 import ModalView from '../../components/modal/modal'
 import { deleteUserAPI } from '../../../../apis/userAPI'
+import { LoadingButton } from '@mui/lab'
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({
   selected,
-  taiKhoan,
-  hoTen,
+  userId,
+  name,
   email,
   avatar,
+  phoneNumber,
   handleClick,
 }) {
-  const queryClient = new QueryClient()
-  const userInfor = {
-    taiKhoan,
-    hoTen,
-    email,
-    avatar,
-  }
+  const queryClient = useQueryClient()
+
   const [open, setOpen] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   const handleOpenModal = () => setOpenModal(true)
@@ -48,10 +44,9 @@ export default function UserTableRow({
   const handleCloseMenu = () => {
     setOpen(null)
   }
+
   const { mutate: deleteUser, isPending } = useMutation({
-    mutationFn: async (taiKhoan) => {
-      await deleteUserAPI(taiKhoan)
-    },
+    mutationFn: (userId) => deleteUserAPI(userId),
     onSuccess: () => {
       Swal.fire({
         icon: 'success',
@@ -67,14 +62,13 @@ export default function UserTableRow({
     onError: (error) => {
       Swal.fire({
         icon: 'error',
-        title: 'Xóa user thất bại',
-        text: error.response.data.content || 'Có lỗi xảy ra khi xóa user.',
+        title: error.response?.data?.content || 'Có lỗi xảy ra khi xóa user.',
         confirmButtonText: 'Đồng ý',
       })
     },
   })
-  const handleDeleteUser = (taiKhoan) => {
-    console.log('taiKhoan click: ', taiKhoan)
+
+  const handleDeleteUser = (userId) => {
     Swal.fire({
       icon: 'warning',
       title: 'Bạn có chắc chắn muốn xóa user này?',
@@ -83,7 +77,7 @@ export default function UserTableRow({
       denyButtonText: 'Hủy',
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteUser(taiKhoan)
+        deleteUser(userId)
       }
       return
     })
@@ -96,14 +90,19 @@ export default function UserTableRow({
           <Checkbox disableRipple checked={selected} onChange={handleClick} />
         </TableCell>
 
-        <TableCell>{taiKhoan}</TableCell>
+        <TableCell>{email}</TableCell>
+
+        <TableCell>{name}</TableCell>
 
         <TableCell>
-          <img src={`${avatar}?w=10&fit=crop&auto=format`} loading="lazy" />{' '}
+          <Avatar
+            src={avatar}
+            alt={name}
+            sx={{ mr: 1, width: 32, height: 32 }}
+          />
         </TableCell>
-        <TableCell>{hoTen}</TableCell>
 
-        <TableCell>{email}</TableCell>
+        <TableCell>{phoneNumber}</TableCell>
 
         <TableCell align="right">
           <IconButton onClick={handleOpenMenu}>
@@ -129,18 +128,19 @@ export default function UserTableRow({
           </Button>
         </MenuItem>
         <MenuItem onClick={handleCloseMenu}>
-          <Button
+          <LoadingButton
+            loading={isPending}
             sx={{ color: 'error.main' }}
             fullWidth
-            onClick={() => handleDeleteUser(taiKhoan)}
+            onClick={() => handleDeleteUser(userId)}
           >
             <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
             Delete
-          </Button>
+          </LoadingButton>
         </MenuItem>
       </Popover>
       <ModalView open={openModal} handleClose={handleCloseModal}>
-        <UserEdit taiKhoan={taiKhoan} />
+        {/* <UserEdit taiKhoan={taiKhoan} /> */}
       </ModalView>
     </>
   )
@@ -149,10 +149,9 @@ export default function UserTableRow({
 UserTableRow.propTypes = {
   handleClick: PropTypes.func,
   selected: PropTypes.any,
-  maLoaiNguoiDung: PropTypes.any,
-  matKhau: PropTypes.any,
-  soDT: PropTypes.any,
-  taiKhoan: PropTypes.any,
-  hoTen: PropTypes.any,
-  email: PropTypes.string,
+  userId: PropTypes.any,
+  name: PropTypes.any,
+  email: PropTypes.any,
+  phoneNumber: PropTypes.any,
+  avatar: PropTypes.any,
 }

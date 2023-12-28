@@ -37,7 +37,7 @@ export default function UserTableToolbar({
         <OutlinedInput
           value={filterName}
           onChange={onFilterName}
-          placeholder="Tìm kiếm tài khoản..."
+          placeholder="Search email..."
           startAdornment={
             <InputAdornment position="start">
               <Iconify
