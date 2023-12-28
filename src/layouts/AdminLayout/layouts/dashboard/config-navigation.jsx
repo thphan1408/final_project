@@ -20,7 +20,7 @@ const navConfig = [
     path: 'project',
   },
   {
-    title: 'user',
+    title: 'User Management',
     path: 'user',
     icon: icon('ic_user'),
   },

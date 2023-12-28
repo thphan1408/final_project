@@ -20,7 +20,6 @@ import TableEmptyRows from '../table-empty-rows'
 import UserTableToolbar from '../user-table-toolbar'
 import { emptyRows, applyFilter, getComparator } from '../utils'
 import { QueryClient, useQuery } from '@tanstack/react-query'
-import AddUser from '../add-user'
 import ModalView from '../../../components/modal/modal'
 import { getUserListAPI } from '../../../../../apis/userAPI'
 
@@ -52,18 +51,18 @@ export default function UserPage() {
   }
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = userList.map((n) => n.taiKhoan)
+      const newSelecteds = userList.map((n) => n.email)
       setSelected(newSelecteds)
       return
     }
     setSelected([])
   }
 
-  const handleClick = (event, taiKhoan) => {
-    const selectedIndex = selected.indexOf(taiKhoan)
+  const handleClick = (event, name) => {
+    const selectedIndex = selected.indexOf(name)
     let newSelected = []
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, taiKhoan)
+      newSelected = newSelected.concat(selected, name)
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1))
     } else if (selectedIndex === selected.length - 1) {
@@ -87,9 +86,8 @@ export default function UserPage() {
 
   const { data: userList = [] } = useQuery({
     queryKey: ['get-list-user'],
-    queryFn: async () => await getUserListAPI(),
+    queryFn: () => getUserListAPI(),
   })
-  console.log('userList: ', userList)
 
   const handleFilterByName = (event) => {
     setPage(0)
@@ -140,10 +138,11 @@ export default function UserPage() {
               onRequestSort={handleSort}
               onSelectAllClick={handleSelectAllClick}
               headLabel={[
-                { id: 'taiKhoan', label: 'Tài khoản' },
-                { id: 'avatar', label: 'Avatar' },
-                { id: 'hoTen', label: 'Họ tên' },
+                // { id: 'taiKhoan', label: 'Tài khoản' },
                 { id: 'email', label: 'Email' },
+                { id: 'name', label: 'Name' },
+                { id: 'avatar', label: 'Avatar' },
+                { id: 'phoneNumber', label: 'Phone number' },
                 { id: '', label: ' ' },
               ]}
             />
@@ -152,13 +151,14 @@ export default function UserPage() {
                 ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((user, index) => (
                   <UserTableRow
-                    key={index}
-                    taiKhoan={user.userId}
-                    hoTen={user.name}
+                    key={user.userId}
+                    userId={user.userId}
+                    name={user.name}
                     email={user.email}
                     avatar={user.avatar}
-                    selected={selected.indexOf(user.taiKhoan) !== -1}
-                    handleClick={(event) => handleClick(event, user.taiKhoan)}
+                    phoneNumber={user.phoneNumber}
+                    selected={selected.indexOf(user.email) !== -1}
+                    handleClick={(event) => handleClick(event, user.email)}
                   />
                 ))}
             </TableBody>
@@ -179,7 +179,7 @@ export default function UserPage() {
         <Typography variant="h4" sx={{ mb: 5 }}>
           Thêm người dùng
         </Typography>
-        <AddUser handleClose={handleClose} />
+        {/* <AddUser handleClose={handleClose} /> */}
       </ModalView>
     </Container>
   )
