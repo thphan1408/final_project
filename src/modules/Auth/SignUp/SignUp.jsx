@@ -14,7 +14,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { signupAPI } from '../../../apis/userAPI'
-import { PATH } from '../../../routes/path'
+import { PATH } from '../../../constants/path'
 import { LoadingButton } from '@mui/lab'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -102,8 +102,6 @@ const SignUp = () => {
       toast.success('Đăng ký thành công')
     },
     onError: (error) => {
-      let errorMessage = 'Đã xảy ra lỗi khi đăng ký.'
-
       if (error.response) {
         const errorData = error.response.data
         if (errorData.message) {
