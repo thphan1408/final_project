@@ -24,8 +24,6 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import Lottie from 'react-lottie'
-import defaultOptions from '../../../utils/Lotties/OptionsLottie'
 import { useAuth } from '../../../context/UserContext/UserContext'
 
 function Copyright(props) {
