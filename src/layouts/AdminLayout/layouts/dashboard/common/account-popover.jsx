@@ -1,5 +1,5 @@
 import Typography from '@mui/material/Typography'
-import { PATH } from '../../../../../routes/path'
+import { PATH } from '../../../../../constants/path'
 // import { useAuth } from '../../../../../contexts/UserContext/UserContext'
 import {
   Avatar,

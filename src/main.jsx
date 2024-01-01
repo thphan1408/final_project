@@ -6,6 +6,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { HelmetProvider } from 'react-helmet-async'
 
 import './index.css'
+import { BrowserRouter } from 'react-router-dom'
+import { UserProvider } from './context/UserContext/UserContext.jsx'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,7 +21,11 @@ const queryClient = new QueryClient({
 ReactDOM.createRoot(document.getElementById('root')).render(
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-      <App />
+      <BrowserRouter>
+        <UserProvider>
+          <App />
+        </UserProvider>
+      </BrowserRouter>
     </HelmetProvider>
     {/* <ReactQueryDevtools initialIsOpen={false} /> */}
   </QueryClientProvider>

@@ -42,6 +42,10 @@ const UserProvider = ({ children }) => {
 
 const useAuth = () => {
   const value = useContext(UserContext)
+
+  if (!value) {
+    throw new Error('useAuth must be used within a UserProvider')
+  }
   return value
 }
 
