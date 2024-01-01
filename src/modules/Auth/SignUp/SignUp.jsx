@@ -20,8 +20,6 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import Lottie from 'react-lottie'
-import defaultOptions from '../../../utils/Lotties/OptionsLottie'
 
 function Copyright(props) {
   return (
@@ -121,19 +119,7 @@ const SignUp = () => {
 
   return (
     <>
-      {/* {isPending ? (
-        <Lottie
-          options={defaultOptions}
-          style={{
-            width: '40%',
-            height: '40%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            margin: 'auto',
-          }}
-        />
-      ) : ( */}
+
       <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
@@ -230,7 +216,6 @@ const SignUp = () => {
           <Copyright sx={{ mt: 5 }} />
         </Container>
       </ThemeProvider>
-      {/* )} */}
     </>
   )
 }
