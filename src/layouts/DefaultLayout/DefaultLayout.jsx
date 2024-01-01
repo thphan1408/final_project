@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Header } from '../../components/header'
 import { Outlet } from 'react-router-dom'
 
 const DefaultLayout = () => {
   return (
     <>
-      <Header />
-      <Outlet />
+      <Suspense>
+        <Header />
+        <Outlet />
+      </Suspense>
     </>
   )
 }

@@ -2,13 +2,11 @@ import { lazy, Suspense } from 'react'
 import { Outlet, Navigate, useRoutes } from 'react-router-dom'
 
 import DashboardLayout from '../layouts/dashboard'
-import UserPage from '../pages/user'
 
 export const IndexPage = lazy(() => import('../pages/app'))
 // export const BlogPage = lazy(() => import('../pages/blog'))
-// export const UserPage = lazy(() => import('../pages/user'))
+export const UserPage = lazy(() => import('../pages/user'))
 export const Project = lazy(() => import('../pages/project'))
-// export const MoviePage = lazy(() => import('../pages/MovieManagement'))
 // export const Page404 = lazy(() => import('../pages/page-not-found'))
 
 // ----------------------------------------------------------------------
@@ -25,7 +23,6 @@ export default function Router() {
       ),
       children: [
         { element: <IndexPage />, index: true },
-        // { path: 'user', element: <UserPage /> },
         { path: 'project', element: <Project /> },
         { path: 'user', element: <UserPage /> },
       ],

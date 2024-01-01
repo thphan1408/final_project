@@ -3,18 +3,18 @@ import ThemeProvider from './themes'
 import { useScrollToTop } from './hooks/use-scroll-to-top'
 import { useAuth } from '../../context/UserContext/UserContext'
 import { Navigate } from 'react-router-dom'
-import { PATH } from '../../routes/path'
+import { PATH } from '../../constants/path'
 
 export default function AdminApp() {
   useScrollToTop()
-  const { currentUser } = useAuth()
-  if (currentUser) {
-    return (
-      <ThemeProvider>
-        <Router />
-      </ThemeProvider>
-    )
-  }
+  // const { currentUser } = useAuth()
+  // if (currentUser) {
+  return (
+    <ThemeProvider>
+      <Router />
+    </ThemeProvider>
+  )
+  // }
 
-  return <Navigate to={PATH.ROOT} />
+  // return <Navigate to={PATH.ROOT} />
 }

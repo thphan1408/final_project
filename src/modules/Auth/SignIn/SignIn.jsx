@@ -18,7 +18,7 @@ import { Link, useNavigate, Navigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { signinAPI } from '../../../apis/userAPI'
-import { PATH } from '../../../routes/path'
+import { PATH } from '../../../constants/path'
 import { LoadingButton } from '@mui/lab'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -113,19 +113,6 @@ const SignIn = () => {
 
   return (
     <>
-      {/* {isPending ? (
-        <Lottie
-          options={defaultOptions}
-          style={{
-            width: '40%',
-            height: '40%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            margin: 'auto',
-          }}
-        />
-      ) : ( */}
       <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
@@ -198,7 +185,6 @@ const SignIn = () => {
           <Copyright sx={{ mt: 8, mb: 4 }} />
         </Container>
       </ThemeProvider>
-      {/* )} */}
     </>
   )
 }
