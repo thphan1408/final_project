@@ -21,6 +21,8 @@ import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom'
 import ModalView from '../../components/modal/modal'
 import PopOver from '../../components/popover/PopOver'
+import { LoadingButton } from '@mui/lab'
+import { deleteProjectAPI } from '../../../../apis/projectAPI'
 
 export default function ProjectTableRow({
   selected,
@@ -61,6 +63,46 @@ export default function ProjectTableRow({
     setSelectedPopover(type)
   }
   // end popover
+
+  // start delete project
+  const { mutate: handleDelete, isPending } = useMutation({
+    mutationFn: (projectId) => deleteProjectAPI(projectId),
+    onSuccess: () => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Delete project success!',
+        confirmButtonText: 'Ok',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          queryClient.invalidateQueries('get-list-project')
+        }
+      })
+    },
+    onError: (error) => {
+      Swal.fire({
+        icon: 'error',
+        title: error.content,
+        // text: error.message,
+        showConfirmButton: 'Ok',
+      })
+    },
+  })
+
+  const handleDeleteProject = (projectId) => {
+    handleCloseMenu()
+    Swal.fire({
+      icon: 'warning',
+      title: 'Are you sure you want to delete this project?',
+      confirmButtonText: 'OK',
+      showDenyButton: true,
+      denyButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDelete(projectId)
+      }
+      return
+    })
+  }
 
   return (
     <>
@@ -157,15 +199,26 @@ export default function ProjectTableRow({
           </>
         ) : (
           <>
-            <Stack direction={'column'} alignItems={'center'}>
+            <Stack
+              direction={'column'}
+              alignItems={'center'}
+              sx={{ width: '120px', p: 1 }}
+              spacing={0.3}
+            >
               <Button fullWidth>
                 <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
                 Sửa
               </Button>
-              <Button sx={{ color: 'error.main' }} fullWidth>
+              <LoadingButton
+                sx={{ color: 'error.main' }}
+                fullWidth
+                onClick={() => {
+                  handleDeleteProject(id)
+                }}
+              >
                 <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
                 Xóa
-              </Button>
+              </LoadingButton>
             </Stack>
           </>
         )}
