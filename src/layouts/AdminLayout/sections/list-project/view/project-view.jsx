@@ -11,7 +11,6 @@ import {
   Typography,
 } from '@mui/material'
 import React from 'react'
-import Scrollbar from '../../../components/scrollbar'
 import { useQuery } from '@tanstack/react-query'
 import Iconify from '../../../components/iconify'
 
@@ -20,9 +19,8 @@ import { applyFilter, getComparator, emptyRows } from '../utils'
 import ProjectTableRow from '../project-table-row'
 import ModalView from '../../../components/modal/modal'
 import { getAllProjectAPI } from '../../../../../apis/projectAPI'
-import TableEmptyRows from '../table-empty-rows'
-import TableNoData from '../table-no-data'
 import ProjectTableToolbar from '../project-table-toolbar'
+import AddProject from '../add-project/AddProject'
 
 const ProjectView = () => {
   // Start pagination
@@ -161,6 +159,7 @@ const ProjectView = () => {
                   .map((project) => (
                     <ProjectTableRow
                       key={project.id}
+                      id={project.id}
                       projectName={project.projectName}
                       categoryName={project.categoryName}
                       creator={project.creator}
@@ -192,7 +191,7 @@ const ProjectView = () => {
         <Typography variant="h4" sx={{ mb: 5 }}>
           Add new project
         </Typography>
-        {/* <AddMovie handleClose={handleClose} /> */}
+        <AddProject handleClose={handleClose} />
       </ModalView>
     </>
   )
