@@ -1,0 +1,13 @@
+/* QuillEditor.css */
+
+.quill-editor-container {
+  max-width: 100%;
+  overflow-y: auto;
+  height: 300px;
+}
+
+.ql-editor {
+  max-width: 100%;
+  min-height: 100%;
+  word-break: break-word;
+}
