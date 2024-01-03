@@ -13,12 +13,12 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import { alpha, useTheme } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
 
-import { useRouter } from 'src/routes/hooks'
+import { useRouter } from '../../routes/hooks'
 
-import { bgGradient } from 'src/theme/css'
+import { bgGradient } from '../../themes/css'
 
-import Logo from 'src/components/logo'
-import Iconify from 'src/components/iconify'
+import Logo from '../../components/logo'
+import Iconify from '../../components/iconify'
 
 // ----------------------------------------------------------------------
 
@@ -30,7 +30,7 @@ export default function ProfileView() {
   const [showPassword, setShowPassword] = useState(false)
 
   const handleClick = () => {
-    router.push('/dashboard')
+    router.push('/admin')
   }
 
   const renderForm = (

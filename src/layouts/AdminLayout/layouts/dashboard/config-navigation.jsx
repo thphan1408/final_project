@@ -25,6 +25,11 @@ const navConfig = [
     icon: icon('ic_user'),
   },
   // {
+  //   title: 'Profile Management',
+  //   path: 'profile',
+  //   icon: icon('ic_user'),
+  // },
+  // {
   //   title: 'Thêm phim upload hình',
   //   path: 'add-movie',
   // },

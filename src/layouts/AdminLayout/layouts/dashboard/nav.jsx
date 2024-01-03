@@ -14,6 +14,7 @@ import navConfig from './config-navigation'
 import {
   Avatar,
   Box,
+  Divider,
   Drawer,
   ListItemButton,
   Stack,

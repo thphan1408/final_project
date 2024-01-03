@@ -2,12 +2,12 @@ import { lazy, Suspense } from 'react'
 import { Outlet, Navigate, useRoutes } from 'react-router-dom'
 
 import DashboardLayout from '../layouts/dashboard'
-import Profile from '../sections/user/profile'
 
 export const IndexPage = lazy(() => import('../pages/app'))
 // export const BlogPage = lazy(() => import('../pages/blog'))
 export const UserPage = lazy(() => import('../pages/user'))
 export const Project = lazy(() => import('../pages/project'))
+export const Profile = lazy(() => import('../pages/profile'))
 // export const Page404 = lazy(() => import('../pages/page-not-found'))
 
 // ----------------------------------------------------------------------

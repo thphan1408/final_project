@@ -89,6 +89,17 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
+        <Button
+          fullWidth
+          onClick={() => {
+            navigate(PATH.PROFILE)
+            handleClose()
+          }}
+          sx={{ typography: 'body2', py: 0.75, px: 2.5, borderRadius: 0 }}
+        >
+          Profile
+        </Button>
+
         <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
 
         <Button
