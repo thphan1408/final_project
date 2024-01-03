@@ -8,21 +8,31 @@ import {
   AvatarGroup,
   Box,
   Button,
+  Card,
   Checkbox,
   IconButton,
   MenuItem,
   Popover,
   Stack,
+  Tab,
+  Table,
+  TableBody,
   TableCell,
+  TableContainer,
+  TableHead,
   TableRow,
+  TextField,
+  Typography,
 } from '@mui/material'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom'
 import ModalView from '../../components/modal/modal'
 import PopOver from '../../components/popover/PopOver'
 import { LoadingButton } from '@mui/lab'
 import { deleteProjectAPI } from '../../../../apis/projectAPI'
+import AssignUserProject from './search-add-user/AssignUserProject'
+import RemoveUserProject from './remove-user-form-project/RemoveUserProject'
 
 export default function ProjectTableRow({
   selected,
@@ -34,8 +44,8 @@ export default function ProjectTableRow({
   handleClick,
 }) {
   const queryClient = useQueryClient()
-
   // start modal
+
   const [selectedModal, setSelectedModal] = useState(null)
   const [openModal, setOpenModal] = useState(false)
 
@@ -147,6 +157,9 @@ export default function ProjectTableRow({
                 borderRadius: '50%',
                 textAlign: 'center',
               }}
+              onClick={(event) => {
+                handleOpenMenu(event, 'add-member')
+              }}
             >
               <Iconify icon="eva:plus-fill" />
             </Button>
@@ -169,34 +182,18 @@ export default function ProjectTableRow({
         handleCloseMenu={handleCloseMenu}
         selectedPopover={selectedPopover}
       >
-        {selectedPopover === 'avatar' ? (
-          <>
-            {members.map((member) => (
-              <Stack direction={'column'} sx={{ p: 1 }} key={member.userId}>
-                <Box
-                  component={'div'}
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    width: '100%',
-                  }}
-                >
-                  <Stack direction={'row'} alignItems={'center'}>
-                    <Avatar
-                      src={member.avatar}
-                      alt={member.name}
-                      sx={{ mr: 1, width: 32, height: 32 }}
-                    />
-                    {member.name}
-                  </Stack>
-                  <IconButton>
-                    <Iconify icon="eva:trash-2-outline" />
-                  </IconButton>
-                </Box>
-              </Stack>
-            ))}
-          </>
+        {selectedPopover === 'add-member' ? (
+          <AssignUserProject
+            projectId={id}
+            members={members}
+            handleCloseMenu={handleCloseMenu}
+          />
+        ) : selectedPopover === 'avatar' ? (
+          <RemoveUserProject
+            projectId={id}
+            members={members}
+            handleCloseMenu={handleCloseMenu}
+          />
         ) : (
           <>
             <Stack

@@ -56,3 +56,16 @@ export function getComparator(order, orderBy) {
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
+
+export function applyFilterByUser({ inputData, filterName }) {
+  const stabilizedThis = inputData?.map((el, index) => [el, index])
+
+  inputData = stabilizedThis?.map((el) => el[0])
+
+  if (filterName) {
+    inputData = inputData?.filter((user) =>
+      user.name.toString().includes(filterName)
+    )
+  }
+  return inputData
+}
