@@ -10,6 +10,7 @@ import {
   MenuItem,
   Popover,
   alpha,
+  Link,
 } from '@mui/material'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
@@ -78,9 +79,9 @@ export default function AccountPopover() {
         }}
       >
         <Box sx={{ my: 1.5, px: 2 }}>
-          <Typography variant="subtitle2" noWrap>
+          <Link href="/profile" variant="subtitle2" noWrap underline="none">
             {currentUser.name}
-          </Typography>
+          </Link>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             {currentUser.email}
           </Typography>

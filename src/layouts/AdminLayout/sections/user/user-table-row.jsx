@@ -140,7 +140,7 @@ export default function UserTableRow({
         </MenuItem>
       </Popover>
       <ModalView open={openModal} handleClose={handleCloseModal}>
-        {/* <UserEdit taiKhoan={taiKhoan} /> */}
+        {/* <UserEdit userId={userId} /> */}
       </ModalView>
     </>
   )
