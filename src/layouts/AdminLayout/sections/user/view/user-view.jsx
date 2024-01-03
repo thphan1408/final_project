@@ -110,15 +110,6 @@ export default function UserPage() {
         mb={5}
       >
         <Typography variant="h4">Users management</Typography>
-
-        <Button
-          variant="contained"
-          color="inherit"
-          startIcon={<Iconify icon="eva:plus-fill" />}
-          onClick={handleOpen}
-        >
-          New User
-        </Button>
       </Stack>
 
       <Card>
@@ -174,13 +165,6 @@ export default function UserPage() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
-
-      <ModalView open={open} handleClose={handleClose}>
-        <Typography variant="h4" sx={{ mb: 5 }}>
-          Thêm người dùng
-        </Typography>
-        {/* <AddUser handleClose={handleClose} /> */}
-      </ModalView>
     </Container>
   )
 }
