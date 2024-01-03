@@ -5,7 +5,6 @@ import { lazy } from 'react'
 import DefaultLayout from '../layouts/DefaultLayout'
 import AdminApp from '../layouts/AdminLayout/AdminApp'
 import { useAuth } from '../context/UserContext/UserContext'
-import Profile from '../layouts/AdminLayout/sections/user/profile/Profile'
 
 const SignIn = lazy(() => import('../modules/Auth/SignIn/SignIn'))
 const SignUp = lazy(() => import('../modules/Auth/SignUp/SignUp'))
