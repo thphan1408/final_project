@@ -79,7 +79,12 @@ export default function AccountPopover() {
         }}
       >
         <Box sx={{ my: 1.5, px: 2 }}>
-          <Link href="/profile" variant="subtitle2" noWrap underline="none">
+          <Link
+            href="/admin/profile"
+            variant="subtitle2"
+            noWrap
+            underline="none"
+          >
             {currentUser.name}
           </Link>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>

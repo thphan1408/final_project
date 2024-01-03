@@ -6,6 +6,8 @@ const Project = () => {
   return (
     <>
       <Helmet>Project</Helmet>
+
+      <Helmet>Profile</Helmet>
       <ProfileView />
     </>
   )
