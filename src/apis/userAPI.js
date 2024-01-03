@@ -65,9 +65,49 @@ export const getUserById = async (userId) => {
     }
   }
 }
+
 export const deleteUserAPI = async (id) => {
   const response = await fetcher.delete('/Users/deleteUser', {
     params: { id },
   })
   return response.data.content
+}
+
+export const assignUserProjectAPI = async (payload) => {
+  try {
+    const response = await fetcher.post('/Project/assignUserProject', payload)
+    return response.data.content
+  } catch (error) {
+    if (error.response && error.response.status === 403) {
+      const errorData = error.response.data
+      if (errorData.content) {
+        throw {
+          status: 403,
+          content: errorData.content,
+          message: errorData.message,
+        }
+      }
+    }
+  }
+}
+
+export const removeUserProjectAPI = async (payload) => {
+  try {
+    const response = await fetcher.post(
+      '/Project/removeUserFromProject',
+      payload
+    )
+    return response.data.content
+  } catch (error) {
+    if (error.response && error.response.status === 403) {
+      const errorData = error.response.data
+      if (errorData.content) {
+        throw {
+          status: 403,
+          content: errorData.content,
+          message: errorData.message,
+        }
+      }
+    }
+  }
 }
