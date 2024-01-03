@@ -5,6 +5,7 @@ import { lazy } from 'react'
 import DefaultLayout from '../layouts/DefaultLayout'
 import AdminApp from '../layouts/AdminLayout/AdminApp'
 import { useAuth } from '../context/UserContext/UserContext'
+import Profile from '../layouts/AdminLayout/sections/user/profile/Profile'
 
 const SignIn = lazy(() => import('../modules/Auth/SignIn/SignIn'))
 const SignUp = lazy(() => import('../modules/Auth/SignUp/SignUp'))
@@ -30,14 +31,13 @@ const useRouteElement = () => {
     {
       path: PATH.ADMIN,
       element: currentUser ? <AdminApp /> : <Navigate to={PATH.ROOT} />,
-      children: [{ path: 'project' }, { path: 'user' }],
+      children: [{ path: 'project' }, { path: 'user' }, { path: 'profile' }],
     },
     {
       path: '*',
       element: <NotFound />,
     },
   ]
-
   return useRoutes(routes)
 }
 

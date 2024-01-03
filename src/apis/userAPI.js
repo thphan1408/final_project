@@ -47,6 +47,24 @@ export const getUserListAPI = async (user = '') => {
     }
   }
 }
+
+export const getUserById = async (userId) => {
+  try {
+    const response = await fetcher.get('/Users/getUser', {
+      params: {
+        keyword: user,
+      },
+    })
+    return response.data.content
+  } catch (error) {
+    if (error.response && error.response.status === 400) {
+      const errorData = error.response.data
+      if (errorData.content) {
+        throw { status: 400, message: 'Lấy danh sách user thất bại' }
+      }
+    }
+  }
+}
 export const deleteUserAPI = async (id) => {
   const response = await fetcher.delete('/Users/deleteUser', {
     params: { id },
