@@ -149,7 +149,7 @@ const ProjectView = () => {
                   { id: 'projectName', label: 'Project name' },
                   { id: 'categoryName', label: 'Category name' },
                   { id: 'creator', label: 'Creator' },
-                  { id: 'nember', label: 'Nember' },
+                  { id: 'member', label: 'Member' },
                   { id: '' },
                 ]}
               />
