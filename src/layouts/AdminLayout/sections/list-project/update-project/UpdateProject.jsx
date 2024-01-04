@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   Grid,
   InputLabel,
   MenuItem,
@@ -24,6 +25,14 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { getProjectCategoryAPI } from '../../../../../apis/projectCategoryAPI'
 import '../css/quill.css'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
+const schemaUpdateProject = yup.object({
+  projectName: yup.string().required('Please enter project name'),
+  categoryId: yup.string().required('Please select category'),
+  description: yup.string().required('Please enter description'),
+})
 
 const UpdateProject = ({ handleCloseModal, projectId, handleCloseMenu }) => {
   const queryClient = useQueryClient()
@@ -35,7 +44,14 @@ const UpdateProject = ({ handleCloseModal, projectId, handleCloseMenu }) => {
     enabled: !!projectId,
   })
 
-  const { handleSubmit, register, control, getValues, setValue } = useForm({
+  const {
+    handleSubmit,
+    register,
+    control,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       id: projectId,
       categoryId: projectDetail.projectCategory?.id || '',
@@ -43,6 +59,8 @@ const UpdateProject = ({ handleCloseModal, projectId, handleCloseMenu }) => {
       creator: projectDetail?.creator?.id || '',
       description: projectDetail?.description || '',
     },
+    mode: 'all',
+    resolver: yupResolver(schemaUpdateProject),
   })
 
   useEffect(() => {
@@ -128,6 +146,10 @@ const UpdateProject = ({ handleCloseModal, projectId, handleCloseMenu }) => {
                 InputLabelProps={{
                   shrink: !!getValues('projectName'), // shrink the label if there is a value
                 }}
+                error={Boolean(errors.projectName)}
+                helperText={
+                  Boolean(errors.projectName) && errors.projectName.message
+                }
               />
               <Controller
                 name="categoryId"
@@ -135,13 +157,24 @@ const UpdateProject = ({ handleCloseModal, projectId, handleCloseMenu }) => {
                 render={({ field }) => {
                   return (
                     <FormControl sx={{ width: '100%' }}>
-                      <InputLabel id="category">Category</InputLabel>
+                      <InputLabel
+                        sx={{
+                          color: errors.categoryId ? 'error.main' : undefined,
+                          '&.Mui-focused': {
+                            color: errors.categoryId ? 'error.main' : undefined,
+                          },
+                        }}
+                        id="category"
+                      >
+                        Category
+                      </InputLabel>
                       <Select
                         {...field}
                         labelId="category"
                         id="category"
                         fullWidth
                         label="Category"
+                        error={!!errors.categoryId}
                         defaultValue={getValues('categoryId')}
                       >
                         {CategoryProject?.map((item) => {
@@ -152,6 +185,11 @@ const UpdateProject = ({ handleCloseModal, projectId, handleCloseMenu }) => {
                           )
                         })}
                       </Select>
+                      {errors.categoryId && (
+                        <FormHelperText error>
+                          {errors.categoryId.message}
+                        </FormHelperText>
+                      )}
                     </FormControl>
                   )
                 }}

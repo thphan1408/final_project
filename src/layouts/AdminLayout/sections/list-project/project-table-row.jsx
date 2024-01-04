@@ -208,13 +208,14 @@ export default function ProjectTableRow({
               sx={{ width: '120px', p: 1 }}
               spacing={0.3}
             >
-              <Button fullWidth onClick={handleOpenModal}>
+              <Button fullWidth onClick={handleOpenModal} size="large">
                 <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
                 Sửa
               </Button>
               <LoadingButton
                 sx={{ color: 'error.main' }}
                 fullWidth
+                size="large"
                 onClick={() => {
                   handleDeleteProject(id)
                 }}
