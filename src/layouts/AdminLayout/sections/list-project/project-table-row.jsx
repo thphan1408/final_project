@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { lazy, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import Label from '../../components/label'
@@ -31,8 +31,14 @@ import ModalView from '../../components/modal/modal'
 import PopOver from '../../components/popover/PopOver'
 import { LoadingButton } from '@mui/lab'
 import { deleteProjectAPI } from '../../../../apis/projectAPI'
-import AssignUserProject from './search-add-user/AssignUserProject'
-import RemoveUserProject from './remove-user-form-project/RemoveUserProject'
+import UpdateProject from './update-project'
+
+const AssignUserProject = lazy(() =>
+  import('./search-add-user/AssignUserProject')
+)
+const RemoveUserProject = lazy(() =>
+  import('./remove-user-form-project/RemoveUserProject')
+)
 
 export default function ProjectTableRow({
   selected,
@@ -202,7 +208,7 @@ export default function ProjectTableRow({
               sx={{ width: '120px', p: 1 }}
               spacing={0.3}
             >
-              <Button fullWidth>
+              <Button fullWidth onClick={handleOpenModal}>
                 <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
                 Sửa
               </Button>
@@ -221,8 +227,16 @@ export default function ProjectTableRow({
         )}
       </PopOver>
 
-      {/* <ModalView open={openModal} handleClose={handleCloseModal}>
-      </ModalView> */}
+      <ModalView open={openModal} handleClose={handleCloseModal}>
+        <Typography variant="h4" sx={{ mb: 5 }}>
+          Update project
+        </Typography>
+        <UpdateProject
+          projectId={id}
+          handleCloseModal={handleCloseModal}
+          handleCloseMenu={handleCloseMenu}
+        />
+      </ModalView>
     </>
   )
 }
