@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   Grid,
   InputLabel,
   MenuItem,
@@ -21,18 +22,34 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { getProjectCategoryAPI } from '../../../../../apis/projectCategoryAPI'
 import '../css/quill.css'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
+const schemaAddProject = yup.object({
+  projectName: yup.string().required('Please enter project name'),
+  categoryId: yup.string().required('Please select category'),
+  description: yup.string().required('Please enter description'),
+})
 
 const AddProject = ({ handleClose }) => {
   const queryClient = useQueryClient()
   const [quillValues, setQuillValues] = useState('')
 
-  const { handleSubmit, register, control, getValues } = useForm({
+  const {
+    handleSubmit,
+    register,
+    control,
+    getValues,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       categoryId: '',
       projectName: '',
       alias: '',
       description: '',
     },
+    mode: 'all',
+    resolver: yupResolver(schemaAddProject),
   })
 
   const { data } = useQuery({
@@ -94,14 +111,29 @@ const AddProject = ({ handleClose }) => {
                 label="Project name"
                 fullWidth
                 {...register('projectName')}
+                error={Boolean(errors.projectName)}
+                helperText={
+                  Boolean(errors.projectName) && errors.projectName.message
+                }
               />
+
               <Controller
                 name="categoryId"
                 control={control}
                 render={({ field }) => {
                   return (
                     <FormControl sx={{ width: '100%' }}>
-                      <InputLabel id="category">Category</InputLabel>
+                      <InputLabel
+                        sx={{
+                          color: errors.categoryId ? 'error.main' : undefined,
+                          '&.Mui-focused': {
+                            color: errors.categoryId ? 'error.main' : undefined,
+                          },
+                        }}
+                        id="category"
+                      >
+                        Category
+                      </InputLabel>
                       <Select
                         {...field}
                         labelId="category"
@@ -109,6 +141,7 @@ const AddProject = ({ handleClose }) => {
                         fullWidth
                         label="Category"
                         defaultValue={getValues('categoryId')}
+                        error={!!errors.categoryId}
                       >
                         {data?.map((item) => {
                           return (
@@ -118,6 +151,11 @@ const AddProject = ({ handleClose }) => {
                           )
                         })}
                       </Select>
+                      {errors.categoryId && (
+                        <FormHelperText error>
+                          {errors.categoryId.message}
+                        </FormHelperText>
+                      )}
                     </FormControl>
                   )
                 }}
