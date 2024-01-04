@@ -1,1 +1,1 @@
-// export { default } from './UpdateProject'
+export { default } from './UpdateProject'

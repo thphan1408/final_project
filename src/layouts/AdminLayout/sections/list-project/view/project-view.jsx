@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { lazy, useState } from 'react'
 import {
   Button,
   Card,
@@ -16,11 +16,13 @@ import Iconify from '../../../components/iconify'
 
 import ProjectTableHead from '../project-table-head'
 import { applyFilter, getComparator, emptyRows } from '../utils'
-import ProjectTableRow from '../project-table-row'
+// import ProjectTableRow from '../project-table-row'
 import ModalView from '../../../components/modal/modal'
 import { getAllProjectAPI } from '../../../../../apis/projectAPI'
 import ProjectTableToolbar from '../project-table-toolbar'
 import AddProject from '../add-project/AddProject'
+
+const ProjectTableRow = lazy(() => import('../project-table-row'))
 
 const ProjectView = () => {
   // Start pagination

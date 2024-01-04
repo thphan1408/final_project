@@ -51,3 +51,37 @@ export const deleteProjectAPI = async (projectId) => {
     }
   }
 }
+
+export const updateProjectAPI = async ({ projectId, values }) => {
+  try {
+    const response = await fetcher.put(`/Project/updateProject`, values, {
+      params: {
+        projectId: projectId,
+      },
+    })
+    return response.data.content
+  } catch (error) {
+    if (error.response && error.response.status) {
+      const errorData = error.response.data
+      if (errorData.content) {
+        throw {
+          content: errorData.content,
+          message: errorData.message,
+        }
+      }
+    }
+  }
+}
+
+export const getProjectDetailAPI = async (projectId) => {
+  try {
+    const response = await fetcher.get(`/Project/getProjectDetail`, {
+      params: {
+        id: projectId,
+      },
+    })
+    return response.data.content
+  } catch (error) {
+    throw error
+  }
+}
