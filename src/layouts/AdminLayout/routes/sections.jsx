@@ -4,7 +4,7 @@ import { Outlet, Navigate, useRoutes } from 'react-router-dom'
 import DashboardLayout from '../layouts/dashboard'
 
 export const IndexPage = lazy(() => import('../pages/app'))
-// export const BlogPage = lazy(() => import('../pages/blog'))
+export const ProjectDetail = lazy(() => import('../pages/project-detail-page'))
 export const UserPage = lazy(() => import('../pages/user'))
 export const Project = lazy(() => import('../pages/project'))
 export const Profile = lazy(() => import('../pages/profile'))
@@ -27,6 +27,7 @@ export default function Router() {
         { path: 'project', element: <Project /> },
         { path: 'user', element: <UserPage /> },
         { path: 'profile', element: <Profile /> },
+        { path: 'project-detail/:projectId', element: <ProjectDetail />}
       ],
     },
     // {
