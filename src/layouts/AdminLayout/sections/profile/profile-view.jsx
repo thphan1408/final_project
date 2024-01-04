@@ -20,10 +20,15 @@ import Iconify from '../../components/iconify'
 import { UserProvider } from '../../../../context/UserContext/UserContext'
 import { Avatar } from '@mui/material'
 import { useForm } from 'react-hook-form'
+import ModalView from '../../components/modal/modal'
 
 // ----------------------------------------------------------------------
 
 export default function ProfileView() {
+  const [openModal, setOpenModal] = useState(false)
+  const handleOpenModal = () => setOpenModal(true)
+  const handleCloseModal = () => setOpenModal(false)
+
   const theme = useTheme()
 
   const [userEdit, setUserEdit] = useState(true)
@@ -45,6 +50,8 @@ export default function ProfileView() {
     setValue('email', user.email || ' ')
     setValue('phoneNumber', user.phoneNumber || ' ')
     setValue('fullName', user.name || ' ')
+    setValue('newPassword', '')
+    setValue('rePassword', '')
   }, [setValue, isSubmitSuccessful])
 
   const onSubmit = () => {
@@ -52,9 +59,7 @@ export default function ProfileView() {
   }
   const renderForm = (
     <>
-      {' '}
       <Stack spacing={3}>
-        {' '}
         <TextField
           disabled={userEdit}
           name="fullName"
@@ -73,6 +78,9 @@ export default function ProfileView() {
           {...register('phoneNumber')}
           label="Phone Number"
         />
+        <Typography variant="h6" sx={{ textAlign: 'right' }}>
+          <Button onClick={handleOpenModal}>Change Password</Button>
+        </Typography>
       </Stack>
       <LoadingButton
         fullWidth
@@ -84,6 +92,41 @@ export default function ProfileView() {
         onClick={userEdit ? handleUpdate : onSubmit}
       >
         {userEdit ? 'Edit Profile' : 'Update'}
+      </LoadingButton>
+    </>
+  )
+  const formChangePass = (
+    <>
+      <Stack spacing={3}>
+        <TextField
+          type="password"
+          name="currentPassword"
+          label="Current Password"
+          {...register('fullName')}
+        />
+        <TextField
+          type="password"
+          name="newPassword"
+          label="New Password"
+          {...register('newPassword')}
+        />
+        <TextField
+          type="password"
+          name="rePassword"
+          label="Re Password"
+          {...register('rePassword')}
+        />
+      </Stack>
+      <LoadingButton
+        fullWidth
+        size="large"
+        type="submit"
+        variant="contained"
+        color="inherit"
+        sx={{ my: 3 }}
+        onClick={userEdit ? handleUpdate : onSubmit}
+      >
+        Update Password
       </LoadingButton>
     </>
   )
@@ -109,15 +152,12 @@ export default function ProfileView() {
         }}
       />
 
-      <Stack
-        alignItems="center"
-        justifyContent="center"
-        sx={{ minHeight: 550, width: '40%' }}
-      >
+      <Stack alignItems="center" justifyContent="center" sx={{ width: '40%' }}>
         <Card
           sx={{
             p: 5,
             width: 1,
+            height: 500,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -134,15 +174,12 @@ export default function ProfileView() {
           </Typography>
         </Card>
       </Stack>
-      <Stack
-        alignItems="left"
-        justifyContent="left"
-        sx={{ minHeight: 550, width: '50%' }}
-      >
+      <Stack alignItems="left" justifyContent="left" sx={{ width: '50%' }}>
         <Card
           sx={{
             p: 5,
             width: 1,
+            height: 500,
           }}
         >
           <Typography variant="h4" sx={{ textAlign: 'center', pb: 5 }}>
@@ -152,6 +189,9 @@ export default function ProfileView() {
           {renderForm}
         </Card>
       </Stack>
+      <ModalView open={openModal} handleClose={handleCloseModal}>
+        {formChangePass}
+      </ModalView>
     </Box>
   )
 }
