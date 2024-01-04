@@ -30,7 +30,12 @@ const useRouteElement = () => {
     {
       path: PATH.ADMIN,
       element: currentUser ? <AdminApp /> : <Navigate to={PATH.ROOT} />,
-      children: [{ path: 'project' }, { path: 'user' }, { path: 'profile' }],
+      children: [
+        { path: 'project' },
+        { path: 'user' },
+        { path: 'profile' },
+        { path: 'project-detail/:projectId' },
+      ],
     },
     {
       path: '*',

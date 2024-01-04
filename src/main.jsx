@@ -8,6 +8,8 @@ import { HelmetProvider } from 'react-helmet-async'
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import { UserProvider } from './context/UserContext/UserContext.jsx'
+import { Provider } from 'react-redux'
+import { store } from './layouts/AdminLayout/redux/index.js'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,9 +25,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <HelmetProvider>
       <BrowserRouter>
         <UserProvider>
-          <Suspense>
-            <App />
-          </Suspense>
+          <Provider store={store}>
+            <Suspense>
+              <App />
+            </Suspense>
+          </Provider>
         </UserProvider>
       </BrowserRouter>
     </HelmetProvider>
