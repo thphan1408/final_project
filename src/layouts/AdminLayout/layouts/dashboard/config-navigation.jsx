@@ -1,4 +1,6 @@
+import { useDispatch, useSelector } from 'react-redux'
 import SvgColor from '../../components/svg-color'
+import { projectsActions } from '../../redux/projects/slice'
 
 // ----------------------------------------------------------------------
 
@@ -25,19 +27,14 @@ const navConfig = [
     icon: icon('ic_user'),
   },
   {
-    title: 'Project Detail',
-    path: 'project-detail/:projectId',
+    title: `Project Detail`,
+    path: `project-detail/:id`,
   },
   // {
   //   title: 'Profile Management',
   //   path: 'profile',
   //   icon: icon('ic_user'),
   // },
-  // {
-  //   title: 'Thêm phim upload hình',
-  //   path: 'add-movie',
-  // },
-
   // {
   //   title: 'Not found',
   //   path: '404',
