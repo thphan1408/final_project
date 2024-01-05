@@ -1,3 +1,4 @@
+import styles from './css/project-table-row.module.css'
 import { lazy, useState } from 'react'
 import PropTypes from 'prop-types'
 
@@ -26,12 +27,14 @@ import {
 } from '@mui/material'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Swal from 'sweetalert2'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ModalView from '../../components/modal/modal'
 import PopOver from '../../components/popover/PopOver'
 import { LoadingButton } from '@mui/lab'
 import { deleteProjectAPI } from '../../../../apis/projectAPI'
 import UpdateProject from './update-project'
+import { useDispatch, useSelector } from 'react-redux'
+import { projectsActions } from '../../redux/projects/slice'
 
 const AssignUserProject = lazy(() =>
   import('./search-add-user/AssignUserProject')
@@ -40,6 +43,14 @@ const RemoveUserProject = lazy(() =>
   import('./remove-user-form-project/RemoveUserProject')
 )
 
+const linkStyle = {
+  textDecoration: 'none',
+  color: 'inherit',
+  cursor: 'pointer',
+  '&:hover': {
+    textDecoration: 'underline',
+  },
+}
 export default function ProjectTableRow({
   selected,
   id,
@@ -50,8 +61,8 @@ export default function ProjectTableRow({
   handleClick,
 }) {
   const queryClient = useQueryClient()
-  // start modal
 
+  // start modal
   const [selectedModal, setSelectedModal] = useState(null)
   const [openModal, setOpenModal] = useState(false)
 
@@ -120,14 +131,31 @@ export default function ProjectTableRow({
     })
   }
 
+  const dispatch = useDispatch()
+
+  const handleProject = (id) => {
+    dispatch(projectsActions.setProject(id))
+  }
+
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
         <TableCell padding="checkbox">
           <Checkbox disableRipple checked={selected} onChange={handleClick} />
         </TableCell>
-
-        <TableCell>{projectName}</TableCell>
+        <TableCell>
+          <Label color={'primary'}>
+            <Link
+              to={`/admin/project-detail/${id}`}
+              onClick={() => {
+                handleProject(id)
+              }}
+              className={styles.link}
+            >
+              {projectName}
+            </Link>
+          </Label>
+        </TableCell>
 
         <TableCell>{categoryName}</TableCell>
 

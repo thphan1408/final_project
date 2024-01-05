@@ -27,7 +27,7 @@ export default function Router() {
         { path: 'project', element: <Project /> },
         { path: 'user', element: <UserPage /> },
         { path: 'profile', element: <Profile /> },
-        { path: 'project-detail/:projectId', element: <ProjectDetail />}
+        { path: `project-detail/:id`, element: <ProjectDetail /> },
       ],
     },
     // {
