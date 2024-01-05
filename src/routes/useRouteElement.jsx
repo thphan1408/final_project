@@ -34,7 +34,7 @@ const useRouteElement = () => {
         { path: 'project' },
         { path: 'user' },
         { path: 'profile' },
-        { path: 'project-detail/:projectId' },
+        { path: 'project-detail/:id' },
       ],
     },
     {

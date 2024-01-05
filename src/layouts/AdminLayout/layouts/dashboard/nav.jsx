@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import { usePathname } from '../../routes/hooks'
@@ -22,6 +22,8 @@ import {
   alpha,
 } from '@mui/material'
 import { useAuth } from '../../../../context/UserContext/UserContext'
+import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 
 export default function Nav({ openNav, onCloseNav }) {
   const { currentUser } = useAuth()
@@ -137,13 +139,47 @@ Nav.propTypes = {
 
 function NavItem({ item }) {
   const pathname = usePathname()
-
   const active = item.path === pathname
+  const { id } = useParams()
+
+  // Khởi tạo state để lưu trữ giá trị storedId
+  const [newStoredId, setNewStoredId] = useState(null)
+
+  useEffect(() => {
+    if (id) {
+      localStorage.setItem('projectId', id)
+      setNewStoredId(id)
+    }
+  }, [id])
+
+  // Xóa storedId khi người dùng thoát khỏi trang
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem('projectId')
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [])
+
+  useEffect(() => {
+    const storedId = localStorage.getItem('projectId')
+    setNewStoredId(storedId) // Cập nhật storedId trong state
+  }, [])
+
+  const itemPath =
+    item.path === 'project-detail/:id'
+      ? `/admin/project-detail/${newStoredId}`
+      : `${item.path}`
 
   return (
     <ListItemButton
       component={RouterLink}
-      href={item.path}
+      href={itemPath}
+      disabled={item.path === 'project-detail/:id' && !newStoredId}
       sx={{
         minHeight: 44,
         borderRadius: 0.75,
@@ -165,7 +201,11 @@ function NavItem({ item }) {
         {item.icon}
       </Box>
 
-      <Box component="span">{item.title} </Box>
+      <Box component="span">
+        {item.title === 'Project Detail'
+          ? `Project Detail ${newStoredId || ''}`
+          : item.title}
+      </Box>
     </ListItemButton>
   )
 }
