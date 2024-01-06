@@ -35,13 +35,8 @@ import { deleteProjectAPI } from '../../../../apis/projectAPI'
 import UpdateProject from './update-project'
 import { useDispatch, useSelector } from 'react-redux'
 import { projectsActions } from '../../redux/projects/slice'
-
-const AssignUserProject = lazy(() =>
-  import('./search-add-user/AssignUserProject')
-)
-const RemoveUserProject = lazy(() =>
-  import('./remove-user-form-project/RemoveUserProject')
-)
+import AssignUserProject from './search-add-user/AssignUserProject'
+import RemoveUserProject from './remove-user-form-project/RemoveUserProject'
 
 const linkStyle = {
   textDecoration: 'none',
