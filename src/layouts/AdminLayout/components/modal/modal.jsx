@@ -11,7 +11,7 @@ const style = {
   width: '50%',
   maxHeight: 'auto',
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  // border: '2px solid #000',
   borderRadius: '10px',
   p: 4,
 }
