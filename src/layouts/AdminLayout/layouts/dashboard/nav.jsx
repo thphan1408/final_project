@@ -24,6 +24,7 @@ import {
 import { useAuth } from '../../../../context/UserContext/UserContext'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import Label from '../../components/label'
 
 export default function Nav({ openNav, onCloseNav }) {
   const { currentUser } = useAuth()
@@ -202,9 +203,23 @@ function NavItem({ item }) {
       </Box>
 
       <Box component="span">
-        {item.title === 'Project Detail'
-          ? `Project Detail ${newStoredId || ''}`
-          : item.title}
+        {item.title === 'Project Detail' ? (
+          <>
+            {item.title}
+            {newStoredId && (
+              <Label
+                color={'warning'}
+                sx={{
+                  ml: 1,
+                }}
+              >
+                {newStoredId}
+              </Label>
+            )}
+          </>
+        ) : (
+          item.title
+        )}
       </Box>
     </ListItemButton>
   )
