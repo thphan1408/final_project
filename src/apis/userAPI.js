@@ -90,6 +90,12 @@ export const assignUserProjectAPI = async (payload) => {
     }
   }
 }
+export const editUserAPI = async (payload) => {
+  try {
+    const response = await fetcher.put('/Users/editUser', payload)
+    console.log('response: ', response.data.content)
+  } catch (error) {}
+}
 
 export const removeUserProjectAPI = async (payload) => {
   try {
