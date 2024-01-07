@@ -9,6 +9,8 @@ import {
   OutlinedInput,
   Stack,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material'
 import React, { useState } from 'react'
 import Iconify from '../../../components/iconify'
@@ -24,6 +26,9 @@ import CreateTask from '../create-task'
 
 const ProjectDetail = () => {
   const { id } = useParams()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'))
 
   const [open, setOpen] = useState(false)
   const [orderBy, setOrderBy] = useState('projectName')
@@ -56,7 +61,7 @@ const ProjectDetail = () => {
 
   return (
     <>
-      <Container>
+      <Container sx={{ mt: 3 }}>
         <Stack
           direction="row"
           alignItems="center"
@@ -84,7 +89,7 @@ const ProjectDetail = () => {
         <Grid container spacing={2}>
           {listTask?.map((listTask, index) => {
             return (
-              <Grid item xs={3} key={listTask.statusId}>
+              <Grid item xs={12} md={3} key={listTask.statusId}>
                 <Card
                   sx={{
                     backgroundColor: '#dedee2',
@@ -117,11 +122,23 @@ const ProjectDetail = () => {
       </Container>
 
       <ModalView open={open} handleClose={handleClose}>
-        <Box sx={{ mb: 5, display: 'flex', alignItems: 'center' }}>
-          <Typography variant="h4">Create task for project -</Typography>
+        <Box
+          sx={{
+            mb: 2,
+            display: 'flex',
+            flexDirection: isMobile || isTablet ? 'column' : 'row',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h4">Create task for project </Typography>
           <Label
             color="error"
-            sx={{ fontSize: '1.5rem', ml: 1, fontWeight: '700' }}
+            sx={{
+              fontSize: '1.5rem',
+              ml: isMobile || isTablet ? 0 : 1,
+              mt: isTablet ? 1 : 0,
+              fontWeight: '700',
+            }}
           >
             {id}
           </Label>
