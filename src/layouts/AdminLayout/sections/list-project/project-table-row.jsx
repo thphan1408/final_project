@@ -1,4 +1,3 @@
-import styles from './css/project-table-row.module.css'
 import { lazy, useState } from 'react'
 import PropTypes from 'prop-types'
 
@@ -145,7 +144,8 @@ export default function ProjectTableRow({
               onClick={() => {
                 handleProject(id)
               }}
-              className={styles.link}
+              style={{ ...linkStyle }}
+              // className={styles.link}
             >
               {projectName}
             </Link>

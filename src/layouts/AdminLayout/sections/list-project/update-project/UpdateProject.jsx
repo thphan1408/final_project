@@ -24,7 +24,7 @@ import {
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { getProjectCategoryAPI } from '../../../../../apis/projectCategoryAPI'
-import '../css/quill.css'
+import '../../css/quill.css'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 

@@ -3,8 +3,10 @@ import { Outlet, Navigate, useRoutes } from 'react-router-dom'
 
 import DashboardLayout from '../layouts/dashboard'
 
+import ProjectDetail from '../pages/project-detail-page'
+
 export const IndexPage = lazy(() => import('../pages/app'))
-export const ProjectDetail = lazy(() => import('../pages/project-detail-page'))
+// export const ProjectDetail = lazy(() => import('../pages/project-detail-page'))
 export const UserPage = lazy(() => import('../pages/user'))
 export const Project = lazy(() => import('../pages/project'))
 export const Profile = lazy(() => import('../pages/profile'))
