@@ -50,14 +50,7 @@ const ProjectDetail = () => {
     enabled: !!id,
   })
 
-  console.log('🚀  ListProjectDetail:', ListProjectDetail)
-
   const listTask = ListProjectDetail?.lstTask
-  // const dataAllProject = applyFilter({
-  //   inputData: 'ListProject',
-  //   comparator: getComparator(order, orderBy),
-  //   filterName,
-  // })
 
   return (
     <>
@@ -95,9 +88,6 @@ const ProjectDetail = () => {
                     backgroundColor: '#dedee2',
                   }}
                 >
-                  {/* <Box sx={{ p: 1, borderBottom: '1px solid #fff' }}>
-                    
-                  </Box> */}
                   <CardHeader
                     title={
                       <Typography
@@ -131,17 +121,6 @@ const ProjectDetail = () => {
           }}
         >
           <Typography variant="h4">Create task for project </Typography>
-          <Label
-            color="error"
-            sx={{
-              fontSize: '1.5rem',
-              ml: isMobile || isTablet ? 0 : 1,
-              mt: isTablet ? 1 : 0,
-              fontWeight: '700',
-            }}
-          >
-            {id}
-          </Label>
         </Box>
 
         <CreateTask handleClose={handleClose} />
