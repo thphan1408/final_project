@@ -140,7 +140,6 @@ Nav.propTypes = {
 
 function NavItem({ item }) {
   const pathname = usePathname()
-  const active = item.path === pathname
   const { id } = useParams()
 
   // Khởi tạo state để lưu trữ giá trị storedId
@@ -174,7 +173,12 @@ function NavItem({ item }) {
   const itemPath =
     item.path === 'project-detail/:id'
       ? `/admin/project-detail/${newStoredId}`
-      : `${item.path}`
+      : item.path
+
+  const active =
+    item.path === 'project-detail/:id'
+      ? newStoredId === id
+      : pathname.endsWith(item.path)
 
   return (
     <ListItemButton
