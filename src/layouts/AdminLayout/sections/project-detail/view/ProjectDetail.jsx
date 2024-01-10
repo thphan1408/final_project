@@ -1,4 +1,6 @@
 import {
+  Avatar,
+  AvatarGroup,
   Box,
   Button,
   Card,
@@ -23,6 +25,9 @@ import { useQuery } from '@tanstack/react-query'
 import { getProjectDetailAPI } from '../../../../../apis/projectAPI'
 import ListTaskDetail from '../list-task'
 import CreateTask from '../create-task'
+import PopOver from '../../../components/popover/PopOver'
+import AssignUserTask from '../list-task/AssignUserTask'
+import RemoveUserTask from '../list-task/RemoveUserTask'
 
 const ProjectDetail = () => {
   const { id } = useParams()
@@ -61,7 +66,23 @@ const ProjectDetail = () => {
           justifyContent="space-between"
           mb={5}
         >
-          <Typography variant="h4">Project Detail - {id}</Typography>
+          <Stack direction={'row'} spacing={3} alignItems={'center'}>
+            <Typography variant="h4">
+              {ListProjectDetail?.projectName}
+            </Typography>
+            {/* <AvatarGroup max={3}>
+              {ListProjectDetail?.members?.map((member) => {
+                return (
+                  <Avatar
+                    key={member.userId}
+                    src={member.avatar}
+                    alt={member.name}
+                  />
+                )
+              })}
+            </AvatarGroup> */}
+          </Stack>
+
           <Button
             variant="contained"
             color="inherit"
@@ -82,33 +103,37 @@ const ProjectDetail = () => {
         <Grid container spacing={2}>
           {listTask?.map((listTask, index) => {
             return (
-              <>
-                <Grid item xs={12} md={3} key={listTask.statusId}>
-                  <Card
-                    sx={{
-                      backgroundColor: '#dedee2',
-                    }}
-                  >
-                    <CardHeader
-                      title={
-                        <Typography
-                          sx={{
-                            fontSize: '1.1rem',
-                            color: '#212B36',
-                            fontWeight: 'bold',
-                          }}
-                        >
-                          {listTask.statusName}
-                        </Typography>
-                      }
-                    />
-                    <CardContent>
-                      <ListTaskDetail taskDetail={listTask.lstTaskDeTail} />
-                      <Button variant="contained">Load more</Button>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              </>
+              <Grid
+                item
+                xs={12}
+                md={isMobile || isTablet ? 12 : 3}
+                key={Number(listTask.statusId)}
+              >
+                <Card
+                  sx={{
+                    backgroundColor: '#dedee2',
+                    minHeight: 'auto',
+                  }}
+                >
+                  <CardHeader
+                    title={
+                      <Typography
+                        sx={{
+                          fontSize: '1.1rem',
+                          color: '#212B36',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {listTask.statusName}
+                      </Typography>
+                    }
+                  />
+                  <CardContent>
+                    <ListTaskDetail listTaskDetail={listTask.lstTaskDeTail} />
+                    <Button variant="contained">Load more</Button>
+                  </CardContent>
+                </Card>
+              </Grid>
             )
           })}
         </Grid>

@@ -9,3 +9,20 @@
   box-sizing: border-box;
 }
 
+.truncate {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.truncate--2 {
+  -webkit-line-clamp: 2;
+  word-break: break-all;
+}
+
+.truncate--3 {
+  -webkit-line-clamp: 3;
+  word-break: break-all;
+}
