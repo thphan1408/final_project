@@ -163,21 +163,21 @@ const CreateTask = ({ handleClose }) => {
   }
 
   return (
-    <Box>
+    <Box
+      sx={{
+        height: isMobile || isTablet ? '500px' : '600px',
+        overflow: 'scroll', // Set to 'auto' to enable scrolling
+        '&::-webkit-scrollbar': {
+          width: '0.4em',
+        },
+      }}
+    >
       <Grid
         justifyContent={isMobile ? 'flex-start' : 'center'}
         alignItems={'flex-start'}
       >
         <Grid item md={isMobile ? 12 : isTablet ? 8 : 6}>
-          <Box
-            sx={{
-              height: isMobile || isTablet ? '500px' : '600px',
-              overflowY: 'auto', // Set to 'auto' to enable scrolling
-              '&::-webkit-scrollbar': {
-                width: '0.4em',
-              },
-            }}
-          >
+          <Box>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Stack
                 spacing={2}
@@ -204,7 +204,6 @@ const CreateTask = ({ handleClose }) => {
                 <TextField
                   label="Task name"
                   fullWidth
-                  value={getValues('taskName') || ''}
                   {...register('taskName')}
                 />
                 <TextField

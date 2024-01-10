@@ -14,14 +14,18 @@ import Label from '../../../components/label'
 import PopOver from '../../../components/popover/PopOver'
 import Iconify from '../../../components/iconify'
 import ModalView from '../../../components/modal/modal'
+import AssignUserTask from './AssignUserTask'
+import RemoveUserTask from './RemoveUserTask'
+import TaskDetail from './TaskDetail'
 
 const ListTask = ({ taskDetail }) => {
   const [openMenu, setOpenMenu] = useState(null)
   const [selectedPopover, setSelectedPopover] = useState(null)
-  const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
+  const [openModal, setOpenModal] = useState(false)
 
-  const handleClose = () => setOpen(false)
+  const handleOpenModal = () => setOpenModal(true)
+
+  const handleCloseModal = () => setOpenModal(false)
 
   const handleOpenMenu = (event, type) => {
     setOpenMenu(event.currentTarget)
@@ -43,7 +47,7 @@ const ListTask = ({ taskDetail }) => {
           }}
         >
           <CardHeader
-            onClick={handleOpen}
+            onClick={handleOpenModal}
             sx={{
               cursor: 'pointer',
               transition: 'all 0.3s ease-in-out',
@@ -55,7 +59,7 @@ const ListTask = ({ taskDetail }) => {
             title={
               <Typography
                 sx={{
-                  fontSize: '1.1rem',
+                  fontSize: '1rem',
                   color: '#212B36',
                   fontWeight: 'bold',
                 }}
@@ -80,18 +84,24 @@ const ListTask = ({ taskDetail }) => {
                     ? 'success'
                     : 'default'
                 }
-                sx={{ fontSize: '1.2rem' }}
+                sx={{ fontSize: '1rem' }}
               >
                 {task.priorityTask.priority}
               </Label>
               <Stack direction={'row'}>
-                <AvatarGroup max={1} sx={{ cursor: 'pointer' }}>
+                <AvatarGroup
+                  max={1}
+                  sx={{ cursor: 'pointer' }}
+                  onClick={(event) => {
+                    handleOpenMenu(event, 'removeUserTask')
+                  }}
+                >
                   {task.assigness?.map((assign) => (
                     <Avatar
                       key={assign.id}
                       src={assign.avatar}
                       alt={assign.name}
-                      sx={{ mr: 1 }}
+                      sx={{ width: 25, height: 25 }}
                     />
                   ))}
                 </AvatarGroup>
@@ -100,16 +110,18 @@ const ListTask = ({ taskDetail }) => {
                   color="inherit"
                   sx={{
                     p: 0,
-                    minWidth: 40,
-                    minHeight: 40,
+                    minWidth: 25,
+                    minHeight: 25,
                     borderRadius: '50%',
                     textAlign: 'center',
+                    fontSize: '1rem',
+                    ml: 1,
                   }}
                   onClick={(event) => {
                     handleOpenMenu(event, 'assignUserTask')
                   }}
                 >
-                  <Iconify icon="eva:plus-fill" />
+                  <Iconify icon="eva:plus-fill" sx={{ width: 15, p: 0 }} />
                 </Button>
               </Stack>
             </Stack>
@@ -117,15 +129,36 @@ const ListTask = ({ taskDetail }) => {
         </Card>
       ))}
 
-      <PopOver open={openMenu} handleCloseMenu={handleCloseMenu}>
+      <PopOver
+        openMenu={openMenu}
+        selectedPopover={selectedPopover}
+        handleCloseMenu={handleCloseMenu}
+      >
         {/* Xử lý assignUserTask và removeUserTask */}
+        {selectedPopover === 'assignUserTask' ? (
+          <AssignUserTask
+            taskId={taskDetail.taskId}
+            members={taskDetail.assigness}
+            handleCloseMenu={handleCloseMenu}
+          />
+        ) : selectedPopover === 'removeUserTask' ? (
+          <RemoveUserTask
+            taskId={taskDetail.taskId}
+            members={taskDetail.assigness}
+            handleCloseMenu={handleCloseMenu}
+          />
+        ) : (
+          ''
+        )}
       </PopOver>
 
       {/* Xử lý modal */}
-      <ModalView open={open} handleClose={handleClose}>
-        <Box>
-          <Typography variant="h4">Task detail</Typography>
-        </Box>
+      <ModalView open={openModal} handleClose={handleCloseModal}>
+        <Typography variant="h4">Task detail</Typography>
+        <TaskDetail
+          handleCloseModal={handleCloseModal}
+          handleCloseMenu={handleCloseMenu}
+        />
       </ModalView>
     </>
   )
