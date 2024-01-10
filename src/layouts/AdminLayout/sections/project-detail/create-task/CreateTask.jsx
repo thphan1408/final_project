@@ -18,7 +18,7 @@ import {
   useTheme,
 } from '@mui/material'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import ReactQuill from 'react-quill'
 import { getAllStatusAPI } from '../../../../../apis/statusAPI'
@@ -50,6 +50,8 @@ const CreateTask = ({ handleClose }) => {
   const [selectedUsers, setSelectedUsers] = useState([])
   const [timeTrackingSpent, setTimeTrackingSpent] = useState(0)
   const [timeTrackingRemaining, setTimeTrackingRemaining] = useState(0)
+  const [projectName, setProjectName] = useState('')
+
   const queryClient = useQueryClient()
 
   const { id: projectId } = useParams()
@@ -73,6 +75,11 @@ const CreateTask = ({ handleClose }) => {
     queryFn: getAllTaskTypeAPI,
   })
 
+  useEffect(() => {
+    // Update state when modal opens
+    setProjectName(getAllProjectDetail?.projectName || '')
+  }, [getAllProjectDetail])
+
   const {
     handleSubmit,
     register,
@@ -86,12 +93,12 @@ const CreateTask = ({ handleClose }) => {
       taskName: '',
       description: '',
       statusId: '',
-      originalEstimate: 0,
-      timeTrackingSpent: 0,
-      timeTrackingRemaining: 0,
+      originalEstimate: 0 || '',
+      timeTrackingSpent: 0 || '',
+      timeTrackingRemaining: 0 || '',
       projectId: parseInt(projectId),
-      typeId: 0,
-      priorityId: 0,
+      typeId: 0 || '',
+      priorityId: 0 || '',
     },
     // mode: 'all',
     // resolver: yupResolver(schemaAddProject),
@@ -188,8 +195,8 @@ const CreateTask = ({ handleClose }) => {
                   id="projectName"
                   label={'Project name'}
                   fullWidth
+                  value={projectName}
                   disabled
-                  value={getAllProjectDetail?.projectName}
                   InputLabelProps={{
                     shrink: true,
                   }}
@@ -343,7 +350,7 @@ const CreateTask = ({ handleClose }) => {
                         id="assignUserTask"
                         fullWidth
                         multiple
-                        value={selectedUsers}
+                        value={selectedUsers || []}
                         onChange={handleChange}
                         input={<OutlinedInput label="Assigness" />}
                         renderValue={(selected) => {
@@ -370,6 +377,7 @@ const CreateTask = ({ handleClose }) => {
                     <Box>
                       <InputLabel id="time-tracking">Time tracking</InputLabel>
                       <Slider
+                        aria-label="Time tracking"
                         value={timeTrackingSpent || 0}
                         sx={{ m: '0px 20px', width: 'calc(100% - 40px)' }}
                         onChange={(event, newValue) => {

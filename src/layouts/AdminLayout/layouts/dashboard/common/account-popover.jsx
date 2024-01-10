@@ -100,6 +100,7 @@ export default function AccountPopover() {
             navigate(PATH.PROFILE)
             handleClose()
           }}
+          size="large"
           sx={{ typography: 'body2', py: 0.75, px: 2.5, borderRadius: 0 }}
         >
           Profile

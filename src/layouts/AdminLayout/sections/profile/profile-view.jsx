@@ -21,7 +21,7 @@ import {
   UserProvider,
   useAuth,
 } from '../../../../context/UserContext/UserContext'
-import { Avatar } from '@mui/material'
+import { Avatar, CardContent, Grid, useMediaQuery } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import ModalView from '../../components/modal/modal'
 import { useMutation } from '@tanstack/react-query'
@@ -39,7 +39,6 @@ export default function ProfileView() {
   const handleOpenModal = () => setOpenModal(true)
   const handleCloseModal = () => setOpenModal(false)
   const theme = useTheme()
-
   const [userEdit, setUserEdit] = useState(null)
 
   const schemaEditUser = yup.object({
@@ -119,17 +118,19 @@ export default function ProfileView() {
   }
   const renderForm = (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
         <Stack spacing={3}>
           <TextField
             disabled
             name="id"
             value={currentUser.id}
             label="ID"
+            fullWidth
             {...register('id')}
           />
           <TextField
             disabled
+            fullWidth
             name="email"
             autoComplete="email"
             error={Boolean(errors.email)}
@@ -139,6 +140,7 @@ export default function ProfileView() {
             label="Email Address"
           />
           <TextField
+            fullWidth
             disabled={!userEdit}
             name="name"
             label="Full Name"
@@ -146,6 +148,7 @@ export default function ProfileView() {
           />
 
           <TextField
+            fullWidth
             disabled={!userEdit}
             name="phoneNumber"
             {...register('phoneNumber')}
@@ -153,6 +156,7 @@ export default function ProfileView() {
           />
           <TextField
             type="password"
+            fullWidth
             disabled={!userEdit}
             name="password"
             autoComplete="current-password"
@@ -177,63 +181,44 @@ export default function ProfileView() {
   )
 
   return (
-    <Box
-      sx={{
-        ...bgGradient({
-          color: alpha(theme.palette.background.default, 0.9),
-          imgUrl: '/assets/background/overlay_4.jpg',
-        }),
-        height: 1,
-        display: 'flex',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-      }}
-    >
-      <Logo
-        sx={{
-          position: 'fixed',
-          top: { xs: 16, md: 24 },
-          left: { xs: 16, md: 24 },
-        }}
-      />
+    <>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <Card
+            sx={{
+              minHeight: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <CardContent>
+              <Stack direction={'column'} alignItems={'center'} spacing={2}>
+                <Avatar
+                  alt={currentUser.name}
+                  src={currentUser.avatar}
+                  sx={{ width: 90, height: 90 }}
+                />
+                <Typography variant="h5">{currentUser.name}</Typography>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Grid>
 
-      <Stack alignItems="center" justifyContent="center" sx={{ width: '40%' }}>
-        <Card
-          sx={{
-            p: 5,
-            width: 1,
-            height: 600,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Avatar
-            alt={currentUser.name}
-            src={currentUser.avatar}
-            sx={{ width: 125, height: 125, textAlign: 'center' }}
-          />
-          <Typography variant="h5" sx={{ py: 5 }}>
-            {currentUser.name}
-          </Typography>
-        </Card>
-      </Stack>
-      <Stack alignItems="left" justifyContent="left" sx={{ width: '50%' }}>
-        <Card
-          sx={{
-            p: 5,
-            width: 1,
-            height: 600,
-          }}
-        >
-          <Typography variant="h4" sx={{ textAlign: 'center', pb: 5 }}>
-            User Information
-          </Typography>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Stack alignItems={'center'} spacing={2}>
+                <Typography variant="h4" sx={{ textAlign: 'center' }}>
+                  User Information
+                </Typography>
 
-          {renderForm}
-        </Card>
-      </Stack>
-    </Box>
+                {renderForm}
+              </Stack>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </>
   )
 }
