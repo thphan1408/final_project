@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react'
-import { CURRENT_USER } from '../../constants'
+import { CURRENT_USER, USER_LOGIN_FACEBOOK } from '../../constants'
 
 const UserContext = createContext()
 
@@ -9,6 +9,16 @@ const UserProvider = ({ children }) => {
     return user || null
   })
 
+  const [currentUserFacebook, setCurrentUserFacebook] = useState(() => {
+    const userFacebook = JSON.parse(localStorage.getItem(USER_LOGIN_FACEBOOK))
+    return userFacebook || null
+  })
+  
+  const handleSigninFacebook = (userFacebook) => {
+    setCurrentUserFacebook(userFacebook)
+    localStorage.setItem(USER_LOGIN_FACEBOOK, JSON.stringify(userFacebook))
+  }
+
   const handleSignin = (user) => {
     setCurrentUser(user)
     localStorage.setItem(CURRENT_USER, JSON.stringify(user))
@@ -17,6 +27,7 @@ const UserProvider = ({ children }) => {
   const handleLogout = () => {
     setCurrentUser(null)
     localStorage.clear(CURRENT_USER)
+    localStorage.clear(USER_LOGIN_FACEBOOK)
   }
 
   const [infoUser, setInfoUser] = useState(null)
@@ -33,6 +44,8 @@ const UserProvider = ({ children }) => {
         handleLogout,
         infoUser,
         setValuesData,
+        handleSigninFacebook,
+        currentUserFacebook,
       }}
     >
       {children}

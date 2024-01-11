@@ -17,7 +17,7 @@ import React from 'react'
 import { Link, useNavigate, Navigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
-import { signinAPI } from '../../../apis/userAPI'
+import { signinAPI, signinFacebookAPI } from '../../../apis/userAPI'
 import { PATH } from '../../../constants/path'
 import { LoadingButton } from '@mui/lab'
 import * as yup from 'yup'
@@ -25,6 +25,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useAuth } from '../../../context/UserContext/UserContext'
+import ReactFacebookLogin from 'react-facebook-login'
 
 function Copyright(props) {
   return (
@@ -70,7 +71,10 @@ const showErrorToast = (message) => {
 
 const SignIn = () => {
   const navigate = useNavigate()
-  const { currentUser, handleSignin: handleSigninContext } = useAuth()
+  const {
+    handleSignin: handleSigninContext,
+    handleSigninFacebook: handleSigninFacebookContext,
+  } = useAuth()
 
   const {
     handleSubmit,
@@ -108,6 +112,17 @@ const SignIn = () => {
   const onSubmit = (values) => {
     handleSignin(values)
   }
+
+  // const { mutate: handleSigninFaceBook } = useMutation({
+  //   mutationFn: (value) => {
+  //     return signinFacebookAPI(value)
+  //   },
+  //   onSuccess: (value) => {
+  //     handleSigninFacebookContext(value)
+  //     navigate(PATH.ADMIN)
+  //     toast.success('Đăng nhập thành công')
+  //   },
+  // })
 
   return (
     <>
@@ -178,6 +193,23 @@ const SignIn = () => {
                 </Grid>
               </Grid>
             </form>
+            {/* <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+              <ReactFacebookLogin
+                appId="3675603792719372"
+                autoLoad={true}
+                fields="name,email,picture"
+                size="medium "
+                icon="fa-facebook"
+                isMobile={false}
+                callback={(responseFacebook) => {
+                  console.log('responseFacebook:', responseFacebook)
+                  let { accessToken } = responseFacebook
+                  handleSigninFaceBook({
+                    facebookToken: accessToken
+                  })
+                }}
+              />
+            </Box> */}
           </Box>
 
           <Copyright sx={{ mt: 8, mb: 4 }} />
