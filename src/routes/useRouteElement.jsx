@@ -10,7 +10,7 @@ const SignIn = lazy(() => import('../modules/Auth/SignIn/SignIn'))
 const SignUp = lazy(() => import('../modules/Auth/SignUp/SignUp'))
 
 const useRouteElement = () => {
-  const { currentUser } = useAuth()
+  const { currentUser, currentUserFacebook } = useAuth()
 
   const routes = [
     {
@@ -19,17 +19,32 @@ const useRouteElement = () => {
       children: [
         {
           index: true,
-          element: currentUser ? <Navigate to={PATH.ADMIN} /> : <SignIn />,
+          element:
+            currentUserFacebook || currentUser ? (
+              <Navigate to={PATH.ADMIN} />
+            ) : (
+              <SignIn />
+            ),
         },
         {
           path: PATH.SIGN_UP,
-          element: currentUser ? <Navigate to={PATH.ROOT} /> : <SignUp />,
+          element:
+            currentUserFacebook || currentUser ? (
+              <Navigate to={PATH.ROOT} />
+            ) : (
+              <SignUp />
+            ),
         },
       ],
     },
     {
       path: PATH.ADMIN,
-      element: currentUser ? <AdminApp /> : <Navigate to={PATH.ROOT} />,
+      element:
+        currentUserFacebook || currentUser ? (
+          <AdminApp />
+        ) : (
+          <Navigate to={PATH.ROOT} />
+        ),
       children: [
         { path: 'project' },
         { path: 'user' },
