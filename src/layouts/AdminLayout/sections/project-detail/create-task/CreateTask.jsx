@@ -183,7 +183,7 @@ const CreateTask = ({ handleClose }) => {
         justifyContent={isMobile ? 'flex-start' : 'center'}
         alignItems={'flex-start'}
       >
-        <Grid item md={isMobile ? 12 : isTablet ? 8 : 6}>
+        <Grid item md={isMobile ? 12 : isTablet && 8}>
           <Box>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Stack
