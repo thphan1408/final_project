@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  IconButton,
   Stack,
   Typography,
 } from '@mui/material'
@@ -17,13 +18,24 @@ import ModalView from '../../../components/modal/modal'
 import AssignUserTask from './AssignUserTask'
 import RemoveUserTask from './RemoveUserTask'
 import TaskDetail from './TaskDetail'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import Swal from 'sweetalert2'
+import { removeTaskAPI } from '../../../../../apis/taskAPI'
 
-const ListTask = ({ listTaskDetail }) => {
+const ListTask = ({ listTaskDetail, ListProjectDetail }) => {
   const [openModal, setOpenModal] = useState(false)
+  const [taskId, setTaskId] = useState(null)
+  const queryClient = useQueryClient()
+
   const [openMenu, setOpenMenu] = useState(null)
   const [selectedPopover, setSelectedPopover] = useState(null)
 
-  const handleOpenModal = () => setOpenModal(true)
+  const handleOpenModal = (taskId) => {
+    return () => {
+      setTaskId(taskId)
+      setOpenModal(true)
+    }
+  }
 
   const handleCloseModal = () => setOpenModal(false)
 
@@ -36,22 +48,33 @@ const ListTask = ({ listTaskDetail }) => {
     setOpenMenu(false)
     setSelectedPopover(type)
   }
+
+  const { mutate: removeTask } = useMutation({
+    mutationFn: (id) => removeTaskAPI(id),
+    onSuccess: () => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Remove task successfully',
+        confirmButtonText: 'OK',
+        showDenyButton: true,
+        denyButtonText: 'Cancel',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          queryClient.invalidateQueries('get-list-project-detail-by-id')
+          handleCloseMenu()
+        }
+      })
+    },
+  })
+
+  const handleRemoveTask = (id) => {
+    removeTask(id)
+  }
+
   return (
     <>
       {listTaskDetail?.map((task) => (
-        <Card
-          key={task.taskId}
-          onClick={handleOpenModal}
-          sx={{
-            backgroundColor: '#f0f0f0',
-            mb: 2,
-            cursor: 'pointer',
-            transition: 'all 0.3s ease-in-out',
-            '&:hover': {
-              backgroundColor: '#ccc',
-            },
-          }}
-        >
+        <Card key={task.taskId}>
           <CardHeader
             sx={{
               p: '0.5rem 1rem',
@@ -62,11 +85,27 @@ const ListTask = ({ listTaskDetail }) => {
                   fontSize: '1rem',
                   color: '#212B36',
                   fontWeight: 'bold',
+                  mb: 2,
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    color: '#red',
+                  },
                 }}
+                onClick={handleOpenModal(task.taskId)}
                 className={'truncate'}
               >
                 {task.taskName}
               </Typography>
+            }
+            action={
+              <IconButton
+                onClick={() => {
+                  handleRemoveTask(task.taskId)
+                }}
+              >
+                <Iconify icon="eva:trash-2-outline" />
+              </IconButton>
             }
           />
           <CardContent>
@@ -109,7 +148,7 @@ const ListTask = ({ listTaskDetail }) => {
       {/* Xử lý modal */}
       <ModalView open={openModal} handleClose={handleCloseModal}>
         <Typography variant="h4">Task detail</Typography>
-        <TaskDetail handleCloseModal={handleCloseModal} />
+        <TaskDetail handleCloseModal={handleCloseModal} taskId={taskId} />
       </ModalView>
 
       <PopOver

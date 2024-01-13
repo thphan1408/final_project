@@ -25,9 +25,6 @@ import { useQuery } from '@tanstack/react-query'
 import { getProjectDetailAPI } from '../../../../../apis/projectAPI'
 import ListTaskDetail from '../list-task'
 import CreateTask from '../create-task'
-import PopOver from '../../../components/popover/PopOver'
-import AssignUserTask from '../list-task/AssignUserTask'
-import RemoveUserTask from '../list-task/RemoveUserTask'
 
 const ProjectDetail = () => {
   const { id } = useParams()
@@ -129,7 +126,7 @@ const ProjectDetail = () => {
                     }
                   />
                   <CardContent>
-                    <ListTaskDetail listTaskDetail={listTask.lstTaskDeTail} />
+                    <ListTaskDetail listTaskDetail={listTask.lstTaskDeTail} ListProjectDetail={ListProjectDetail}/>
                     <Button variant="contained">Load more</Button>
                   </CardContent>
                 </Card>
