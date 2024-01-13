@@ -57,8 +57,6 @@ const ListTask = ({ listTaskDetail, ListProjectDetail }) => {
         icon: 'success',
         title: 'Remove task successfully',
         confirmButtonText: 'OK',
-        showDenyButton: true,
-        denyButtonText: 'Cancel',
       }).then((result) => {
         if (result.isConfirmed) {
           queryClient.invalidateQueries('get-list-project-detail-by-id')
@@ -66,10 +64,31 @@ const ListTask = ({ listTaskDetail, ListProjectDetail }) => {
         }
       })
     },
+    onError: (error) => {
+      Swal.fire({
+        icon: 'error',
+        title: error.content,
+        text: error.message,
+        confirmButtonText: 'Ok',
+      })
+    },
   })
 
   const handleRemoveTask = (id) => {
-    removeTask(id)
+    handleCloseMenu()
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Do you want to remove task from the project?',
+      confirmButtonText: 'OK',
+      showDenyButton: true,
+      denyButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeTask(id)
+      }
+      return
+    })
   }
 
   return (

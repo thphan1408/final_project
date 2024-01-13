@@ -116,7 +116,7 @@ const ProjectDetail = () => {
                     title={
                       <Typography
                         sx={{
-                          fontSize: '1.1rem',
+                          fontSize: '0.9rem',
                           color: '#212B36',
                           fontWeight: 'bold',
                         }}
@@ -126,8 +126,11 @@ const ProjectDetail = () => {
                     }
                   />
                   <CardContent>
-                    <ListTaskDetail listTaskDetail={listTask.lstTaskDeTail} ListProjectDetail={ListProjectDetail}/>
-                    <Button variant="contained">Load more</Button>
+                    <ListTaskDetail
+                      listTaskDetail={listTask.lstTaskDeTail}
+                      ListProjectDetail={ListProjectDetail}
+                    />
+                    <Button variant="contained" sx={{my: 2}}>Load more</Button>
                   </CardContent>
                 </Card>
               </Grid>

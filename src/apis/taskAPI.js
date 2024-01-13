@@ -45,7 +45,15 @@ export const removeUserTaskAPI = async (payload) => {
     const response = await fetcher.post('/Project/removeUserFromTask', payload)
     return response.data.content
   } catch (error) {
-    throw error
+    if (error.response && error.response.status) {
+      const errorData = error.response.data
+      if (errorData.content) {
+        throw {
+          content: errorData.content,
+          message: errorData.message,
+        }
+      }
+    }
   }
 }
 
@@ -58,6 +66,14 @@ export const removeTaskAPI = async (id) => {
     })
     return response.data.content
   } catch (error) {
-    throw error
+    if (error.response && error.response.status) {
+      const errorData = error.response.data
+      if (errorData.content) {
+        throw {
+          content: errorData.content,
+          message: errorData.message,
+        }
+      }
+    }
   }
 }
