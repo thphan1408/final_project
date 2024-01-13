@@ -21,6 +21,7 @@ import TaskDetail from './TaskDetail'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Swal from 'sweetalert2'
 import { removeTaskAPI } from '../../../../../apis/taskAPI'
+import EditTask from '../edit-task'
 
 const ListTask = ({ listTaskDetail, ListProjectDetail }) => {
   const [openModal, setOpenModal] = useState(false)
@@ -148,7 +149,7 @@ const ListTask = ({ listTaskDetail, ListProjectDetail }) => {
       {/* Xử lý modal */}
       <ModalView open={openModal} handleClose={handleCloseModal}>
         <Typography variant="h4">Task detail</Typography>
-        <TaskDetail handleCloseModal={handleCloseModal} taskId={taskId} />
+        <EditTask handleCloseModal={handleCloseModal} taskId={taskId} />
       </ModalView>
 
       <PopOver

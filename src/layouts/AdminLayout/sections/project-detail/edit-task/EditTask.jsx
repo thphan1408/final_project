@@ -42,7 +42,8 @@ const MenuProps = {
   },
 }
 
-const EditTask = ({ handleClose }) => {
+const EditTask = ({ handleClose, taskId }) => {
+  console.log('taskId: ', taskId)
   const theme = useTheme()
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
