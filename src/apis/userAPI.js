@@ -3,7 +3,8 @@ import fetcher from './fetcher'
 export const signinFacebookAPI = async (payload) => {
   try {
     const response = await fetcher.post('/Users/facebooklogin', payload)
-    return response.data.content
+    console.log('response:', response)
+    // return response.data.content
   } catch (error) {
     console.log('error:', error)
   }

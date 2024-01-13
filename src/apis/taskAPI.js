@@ -1,5 +1,18 @@
 import fetcher from './fetcher'
 
+export const getTaskDetailAPI = async (id) => {
+  try {
+    const response = await fetcher.get('/Project/getTaskDetail', {
+      params: {
+        taskId: id,
+      },
+    })
+    return response.data.content
+  } catch (error) {
+    throw error
+  }
+}
+
 export const assignUserTaskAPI = async (payload) => {
   try {
     const response = await fetcher.post('/Project/assignUserTask', payload)
@@ -30,6 +43,19 @@ export const createTaskAPI = async (payload) => {
 export const removeUserTaskAPI = async (payload) => {
   try {
     const response = await fetcher.post('/Project/removeUserFromTask', payload)
+    return response.data.content
+  } catch (error) {
+    throw error
+  }
+}
+
+export const removeTaskAPI = async (id) => {
+  try {
+    const response = await fetcher.delete('/Project/removeTask', {
+      params: {
+        taskId: id,
+      },
+    })
     return response.data.content
   } catch (error) {
     throw error
