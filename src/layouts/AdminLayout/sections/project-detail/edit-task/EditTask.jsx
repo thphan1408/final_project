@@ -198,7 +198,6 @@ const EditTask = ({ handleClose, taskId }) => {
       <Typography variant="h4">
         {taskDetail?.taskName} - {projectName}
       </Typography>
-
       <Grid
         justifyContent={isMobile ? 'flex-start' : 'center'}
         alignItems={'flex-start'}
@@ -225,7 +224,7 @@ const EditTask = ({ handleClose, taskId }) => {
                 return (
                   <FormControl
                     sx={{
-                      minWidth: '30%',
+                      minWidth: '20%',
                       marginBottom: '1rem',
                       background: '#e8e7ec',
                     }}
@@ -338,6 +337,7 @@ const EditTask = ({ handleClose, taskId }) => {
                       ))}
                     </AvatarGroup>
                   </Box>
+
                   <TextField
                     label="Task name"
                     fullWidth
@@ -348,6 +348,7 @@ const EditTask = ({ handleClose, taskId }) => {
                     fullWidth
                     type="number"
                     {...register('originalEstimate')}
+                    sx={{ my: 2 }}
                   />
                   <Stack spacing={2} direction={isMobile ? 'column' : 'row'}>
                     <Controller
@@ -419,14 +420,14 @@ const EditTask = ({ handleClose, taskId }) => {
                       }}
                     />
                   </Stack>
-                  <Stack
-                    spacing={2}
-                    direction={isMobile ? 'column' : 'row'}
-                    sx={{ my: 2 }}
-                  >
-                    <Grid container alignItems={'center'}>
-                      <Grid item>
-                        <Box>
+                  <Stack direction={isMobile ? 'column' : 'row'} sx={{ my: 2 }}>
+                    <Grid
+                      container
+                      spacing={2}
+                      direction={isMobile ? 'column' : 'row'}
+                    >
+                      <Grid item sm={12} lg={6}>
+                        <Stack direction="column">
                           <InputLabel id="time-tracking">
                             Time tracking
                           </InputLabel>
@@ -435,53 +436,49 @@ const EditTask = ({ handleClose, taskId }) => {
                             defaultValue={
                               taskDetail?.timeTrackingRemaining || 0
                             }
-                            sx={{ m: '0px 20px', width: 'calc(100% - 40px)' }}
+                            sx={{ ml: 1.5, width: 'calc(100% - 12px)' }}
                             onChange={(event, newValue) => {
                               setTimeTrackingSpent(newValue)
                               handleTimeTrackingSpentChange(newValue)
                             }}
                           />
-                          <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                              <TextField
-                                label="Time tracking spent"
-                                type="number"
-                                fullWidth
-                                {...register('timeTrackingSpent')}
-                                onChange={(event) =>
-                                  handleTimeTrackingSpentChange(
-                                    event.target.value
-                                  )
-                                }
-                                InputProps={{
-                                  endAdornment: (
-                                    <InputAdornment position="end">
-                                      h
-                                    </InputAdornment>
-                                  ),
-                                }}
-                              />
-                            </Grid>
-                            <Grid item xs={6}>
-                              <TextField
-                                label="Time tracking remaining"
-                                type="number"
-                                fullWidth
-                                {...register('timeTrackingRemaining')}
-                                onChange={(event) =>
-                                  setTimeTrackingRemaining(event.target.value)
-                                }
-                                InputProps={{
-                                  endAdornment: (
-                                    <InputAdornment position="end">
-                                      h
-                                    </InputAdornment>
-                                  ),
-                                }}
-                              />
-                            </Grid>
-                          </Grid>
-                        </Box>
+                        </Stack>
+                      </Grid>
+                      <Grid item sm={12} lg={6}>
+                        <Stack direction="row" spacing={2}>
+                          <TextField
+                            label="Time tracking spent"
+                            type="number"
+                            fullWidth
+                            {...register('timeTrackingSpent')}
+                            onChange={(event) =>
+                              handleTimeTrackingSpentChange(event.target.value)
+                            }
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  h
+                                </InputAdornment>
+                              ),
+                            }}
+                          />{' '}
+                          <TextField
+                            label="Time tracking remaining"
+                            type="number"
+                            fullWidth
+                            {...register('timeTrackingRemaining')}
+                            onChange={(event) =>
+                              setTimeTrackingRemaining(event.target.value)
+                            }
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  h
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        </Stack>
                       </Grid>
                     </Grid>
                   </Stack>

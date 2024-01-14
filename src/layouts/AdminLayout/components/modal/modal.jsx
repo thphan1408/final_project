@@ -23,7 +23,7 @@ const ModalView = (props) => {
 
   const modalStyle = {
     ...style,
-    width: isMobile ? '90%' : '60%',
+    width: isMobile ? '90%' : '50%',
   }
 
   return (
