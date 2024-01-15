@@ -94,7 +94,7 @@ const ListTask = ({ listTaskDetail, ListProjectDetail }) => {
   return (
     <>
       {listTaskDetail?.map((task) => (
-        <Card key={task.taskId}>
+        <Card key={task.taskId} sx={{my:1}}>
           <CardHeader
             sx={{
               p: '0.5rem 1rem',

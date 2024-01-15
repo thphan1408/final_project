@@ -130,7 +130,7 @@ const ProjectDetail = () => {
                       listTaskDetail={listTask.lstTaskDeTail}
                       ListProjectDetail={ListProjectDetail}
                     />
-                    <Button variant="contained" sx={{my: 2}}>Load more</Button>
+                    <Button variant="contained" sx={{my: 1}}>Load more</Button>
                   </CardContent>
                 </Card>
               </Grid>
