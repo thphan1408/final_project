@@ -206,17 +206,17 @@ const EditTask = ({ handleClose, taskId }) => {
 
         <Label
           color={
-            taskDetail.priorityTask.priority === 'High'
+            taskDetail?.priorityTask.priority === 'High'
               ? 'error'
-              : taskDetail.priorityTask.priority === 'Medium'
+              : taskDetail?.priorityTask.priority === 'Medium'
               ? 'warning'
-              : taskDetail.priorityTask.priority === 'Low'
+              : taskDetail?.priorityTask.priority === 'Low'
               ? 'success'
               : 'default'
           }
           sx={{ fontSize: '1rem' }}
         >
-          {taskDetail.priorityTask.priority}
+          {taskDetail?.priorityTask.priority}
         </Label>
       </Stack>
 
