@@ -167,7 +167,6 @@ const ListTask = ({ listTaskDetail, ListProjectDetail }) => {
 
       {/* Xử lý modal */}
       <ModalView open={openModal} handleClose={handleCloseModal}>
-        <Typography variant="h4">Task detail</Typography>
         <EditTask handleCloseModal={handleCloseModal} taskId={taskId} />
       </ModalView>
 

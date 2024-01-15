@@ -109,7 +109,7 @@ const ProjectDetail = () => {
                 <Card
                   sx={{
                     backgroundColor: '#dedee2',
-                    minHeight: 'auto',
+                    minHeight: '300px',
                   }}
                 >
                   <CardHeader
@@ -126,11 +126,23 @@ const ProjectDetail = () => {
                     }
                   />
                   <CardContent>
-                    <ListTaskDetail
-                      listTaskDetail={listTask.lstTaskDeTail}
-                      ListProjectDetail={ListProjectDetail}
-                    />
-                    <Button variant="contained" sx={{my: 1}}>Load more</Button>
+                    {listTask?.lstTaskDeTail.length ? (
+                      <>
+                        <ListTaskDetail
+                          listTaskDetail={listTask.lstTaskDeTail}
+                          ListProjectDetail={ListProjectDetail}
+                        />
+                        {listTask?.lstTaskDeTail.length > 1 && (
+                          <>
+                            <Button variant="contained" sx={{ my: 2 }}>
+                              Load more
+                            </Button>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      '...'
+                    )}
                   </CardContent>
                 </Card>
               </Grid>
