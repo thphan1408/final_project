@@ -36,8 +36,13 @@ import { getAllPriorityAPI } from '../../../../../apis/priorityAPI'
 import { getAllTaskTypeAPI } from '../../../../../apis/typeAPI'
 import { getProjectDetailAPI } from '../../../../../apis/projectAPI'
 import { useParams } from 'react-router-dom'
-import { createTaskAPI, getTaskDetailAPI } from '../../../../../apis/taskAPI'
+import {
+  createTaskAPI,
+  getTaskDetailAPI,
+  updateTaskAPI,
+} from '../../../../../apis/taskAPI'
 import Swal from 'sweetalert2'
+import Label from '../../../components/label'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -58,6 +63,7 @@ const EditTask = ({ handleClose, taskId }) => {
   const [timeTrackingSpent, setTimeTrackingSpent] = useState(0)
   const [timeTrackingRemaining, setTimeTrackingRemaining] = useState(0)
   const [projectName, setProjectName] = useState('')
+  const [selectedUsers, setSelectedUsers] = useState([])
 
   const queryClient = useQueryClient()
 
@@ -126,8 +132,9 @@ const EditTask = ({ handleClose, taskId }) => {
   useEffect(() => {
     setValue('listUserAsign', taskDetail?.assigness || []),
       setValue('taskName', taskDetail?.taskName || ' '),
-      setValue('description', taskDetail?.description || ' '),
-      setValue('statusId', taskDetail?.statusId || 1),
+      setValue('description', taskDetail?.description),
+      setQuillValues(taskDetail?.description),
+      setValue('statusId', taskDetail?.statusId),
       setValue('originalEstimate', taskDetail?.originalEstimate || 0),
       setValue('timeTrackingSpent', taskDetail?.timeTrackingSpent || 0),
       setValue('timeTrackingRemaining', taskDetail?.timeTrackingRemaining || 0),
@@ -137,12 +144,9 @@ const EditTask = ({ handleClose, taskId }) => {
       setValue('priorityId', taskDetail?.priorityId)
   }, [taskId, projectId, taskDetail])
 
-  const [selectedUsers, setSelectedUsers] = useState([])
-  console.log('selectedUsers: ', selectedUsers)
-
-  const { mutate: createTask } = useMutation({
+  const { mutate: updateTask } = useMutation({
     mutationFn: (values) => {
-      return createTaskAPI(values)
+      return updateTaskAPI(values)
     },
     onSuccess: () => {
       handleClose()
@@ -168,23 +172,23 @@ const EditTask = ({ handleClose, taskId }) => {
   })
 
   const onSubmit = (values) => {
-    console.log('values: ', values)
-    // console.log('🚀  values:', values)
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'Do you want to create this task?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        createTask(values)
-      }
-      return
-    })
-    handleClose()
+    console.log('values:', values)
+    // handleClose()
+    // Swal.fire({
+    //   title: 'Are you sure?',
+    //   text: 'Do you want to create this task?',
+    //   icon: 'question',
+    //   showCancelButton: true,
+    //   confirmButtonText: 'Yes',
+    //   cancelButtonText: 'No',
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     updateTask(values)
+    //   }
+    //   return
+    // })
   }
+
   return (
     <Box
       sx={{
@@ -195,323 +199,297 @@ const EditTask = ({ handleClose, taskId }) => {
         },
       }}
     >
-      <Typography variant="h4">
-        {taskDetail?.taskName} - {projectName}
-      </Typography>
-      <Grid
-        justifyContent={isMobile ? 'flex-start' : 'center'}
-        alignItems={'flex-start'}
-      >
-        <Grid item md={isMobile ? 12 : isTablet && 8}>
-          <Box>
-            <Stack
-              spacing={2}
-              direction={isMobile ? 'column' : 'row'}
-              sx={{ my: 2 }}
-            >
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography variant="h4">
+          {taskDetail?.taskName} - {projectName}
+        </Typography>
+
+        <Label
+          color={
+            taskDetail.priorityTask.priority === 'High'
+              ? 'error'
+              : taskDetail.priorityTask.priority === 'Medium'
+              ? 'warning'
+              : taskDetail.priorityTask.priority === 'Low'
+              ? 'success'
+              : 'default'
+          }
+          sx={{ fontSize: '1rem' }}
+        >
+          {taskDetail.priorityTask.priority}
+        </Label>
+      </Stack>
+
+      <Box sx={{ my: 2 }}>
+        <Stack spacing={2} direction={'column'}>
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => (
+              <ReactQuill
+                {...field}
+                style={{ width: '100%' }}
+                theme="snow"
+                className="quill-editor-container"
+                placeholder="Write something awesome description..."
+                value={quillValues}
+                onChange={(value) => {
+                  setQuillValues(value)
+                  field.onChange(value)
+                }}
+              />
+            )}
+          />
+
+          <Controller
+            name="statusId"
+            control={control}
+            render={({ field }) => {
+              return (
+                <FormControl>
+                  <Select
+                    {...field}
+                    id="status"
+                    fullWidth
+                    value={field.value || 1}
+                  >
+                    {getStatus?.map((item) => {
+                      return (
+                        <MenuItem key={item.statusId} value={item.statusId}>
+                          {item.statusName}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                  {/* {errors.categoryId && (
+                        <FormHelperText error>
+                          {errors.categoryId.message}
+                        </FormHelperText>
+                      )} */}
+                </FormControl>
+              )
+            }}
+          />
+        </Stack>
+      </Box>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Accordion defaultExpanded>
+          <AccordionSummary
+            sx={{ background: '#e8e7ec', paddingRight: 2, marginRight: 0 }}
+            expandIcon={<ArrowDropDownIcon />}
+            aria-controls="panel1-content"
+            id="panel1-header"
+          >
+            Details
+          </AccordionSummary>
+          <AccordionDetails sx={{ padding: 2, margin: 0, border: 0 }}>
+            <Stack spacing={2} sx={{ mb: 2 }}>
               <TextField
-                sx={{ background: '#e8e7ec' }}
-                label="Description"
+                label="Task name"
                 fullWidth
-                {...register('description')}
+                {...register('taskName')}
+              />
+              <TextField
+                label="Original estimate"
+                fullWidth
+                type="number"
+                {...register('originalEstimate')}
               />
             </Stack>
 
-            <Controller
-              name="statusId"
-              control={control}
-              render={({ field }) => {
-                return (
-                  <FormControl
-                    sx={{
-                      minWidth: '20%',
-                      marginBottom: '1rem',
-                      background: '#e8e7ec',
-                    }}
-                  >
-                    <Select
-                      {...field}
-                      id="status"
-                      fullWidth
-                      value={field.value || 1}
-                    >
-                      {getStatus?.map((item) => {
-                        return (
-                          <MenuItem key={item.statusId} value={item.statusId}>
-                            {item.statusName}
-                          </MenuItem>
-                        )
-                      })}
-                    </Select>
-                    {/* {errors.categoryId && (
-                        <FormHelperText error>
-                          {errors.categoryId.message}
-                        </FormHelperText>
-                      )} */}
-                  </FormControl>
-                )
-              }}
-            />
-
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Accordion
-                defaultExpanded
-                sx={{
-                  '&.MuiAccordion-root.Mui-expanded': {
-                    margin: '0',
-                    padding: 0,
-                  },
-                  '& .MuiAccordionSummary-root': {
-                    minHeight: '10px',
-                    margin: 0,
-                  },
-                  '& .MuiAccordionDetails-root': {},
-                }}
-              >
-                <AccordionSummary
-                  sx={{ border: 0 }}
-                  expandIcon={<ArrowDropDownIcon />}
-                  aria-controls="panel1-content"
-                  id="panel1-header"
+            <Stack spacing={2} direction={'row'} alignItems={'center'}>
+              <FormControl sx={{ width: '50%' }}>
+                <InputLabel id="assignUserTask">Assigness</InputLabel>
+                <Select
+                  labelId="assignUserTask"
+                  id="assignUserTask"
+                  fullWidth
+                  multiple
+                  value={selectedUsers || []}
+                  onChange={handleChange}
+                  input={<OutlinedInput label="Assigness" />}
+                  renderValue={(selected) => {
+                    const selectedUserNames = getAllProjectDetail?.members
+                      ?.filter((user) => selected.includes(user.userId))
+                      ?.map((user) => user.name)
+                    return selectedUserNames.join(', ')
+                  }}
+                  MenuProps={MenuProps}
                 >
-                  <Typography>Details</Typography>
-                </AccordionSummary>
-                <AccordionDetails sx={{ padding: 0, margin: 0, border: 0 }}>
-                  <Box
-                    item
-                    xs={12}
-                    md={6}
-                    my="1rem"
-                    sx={{ display: 'flex', flexDirection: 'row' }}
-                  >
-                    <FormControl
-                      sx={{
-                        width: '50%',
-                        pr: 2,
-                      }}
-                    >
-                      <InputLabel id="assignUserTask">Assigness</InputLabel>
+                  {getAllProjectDetail?.members?.map((user) => (
+                    <MenuItem key={user.userId} value={user.userId}>
+                      <Checkbox checked={selectedUsers.includes(user.userId)} />
+                      {/* <Avatar src={user.avatar} sx={{ mr: 2 }} /> */}
+                      <ListItemText primary={user.name} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <AvatarGroup max={3} sx={{ mt: 2 }}>
+                {getAllProjectDetail?.members
+                  ?.filter((user) => selectedUsers.includes(user.userId))
+                  ?.map((user) => (
+                    <Avatar
+                      key={user.userId}
+                      alt={user.name}
+                      src={user.avatar}
+                    />
+                  ))}
+              </AvatarGroup>
+            </Stack>
+
+            <Stack spacing={2} direction={'row'} sx={{ my: 3 }}>
+              <Controller
+                name="priorityId"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <FormControl sx={{ width: '100%' }}>
+                      <InputLabel id="priority">Priority type</InputLabel>
                       <Select
-                        labelId="assignUserTask"
-                        id="assignUserTask"
+                        {...field}
+                        labelId="priority"
+                        id="priority"
                         fullWidth
-                        multiple
-                        value={selectedUsers || []}
-                        onChange={handleChange}
-                        input={<OutlinedInput label="Assigness" />}
-                        renderValue={(selected) => {
-                          const selectedUserNames = getAllProjectDetail?.members
-                            ?.filter((user) => selected.includes(user.userId))
-                            ?.map((user) => user.name)
-                          return selectedUserNames.join(', ')
-                        }}
-                        MenuProps={MenuProps}
+                        label="Priority type"
+                        value={field.value || 1}
                       >
-                        {getAllProjectDetail?.members?.map((user) => (
-                          <MenuItem key={user.userId} value={user.userId}>
-                            <Checkbox
-                              checked={selectedUsers.includes(user.userId)}
-                            />
-                            {/* <Avatar src={user.avatar} sx={{ mr: 2 }} /> */}
-                            <ListItemText primary={user.name} />
-                          </MenuItem>
-                        ))}
+                        {getPriority?.map((item) => {
+                          return (
+                            <MenuItem
+                              key={item.priorityId}
+                              value={item.priorityId}
+                            >
+                              {item.priority}
+                            </MenuItem>
+                          )
+                        })}
                       </Select>
+                      {/* {errors.categoryId && (
+                        <FormHelperText error>
+                          {errors.categoryId.message}
+                        </FormHelperText>
+                      )} */}
                     </FormControl>
-                    <AvatarGroup
-                      max={2}
-                      sx={{
-                        flexDirection: 'row',
-                        justifyContent: 'start',
-                        cursor: 'pointer',
-                        marginTop: '.5em',
-                      }}
-                    >
-                      {taskDetail?.assigness.map((assign) => (
-                        <Avatar
-                          key={assign.id}
-                          src={assign.avatar}
-                          alt={assign.name}
-                          sx={{ width: 35, height: 35 }}
-                        />
-                      ))}
-                    </AvatarGroup>
-                  </Box>
+                  )
+                }}
+              />
 
-                  <TextField
-                    label="Task name"
-                    fullWidth
-                    {...register('taskName')}
-                  />
-                  <TextField
-                    label="Original estimate"
-                    fullWidth
-                    type="number"
-                    {...register('originalEstimate')}
-                    sx={{ my: 2 }}
-                  />
-                  <Stack spacing={2} direction={isMobile ? 'column' : 'row'}>
-                    <Controller
-                      name="priorityId"
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl sx={{ width: '100%' }}>
-                            <InputLabel id="priority">Priority type</InputLabel>
-                            <Select
-                              {...field}
-                              labelId="priority"
-                              id="priority"
-                              fullWidth
-                              label="Priority type"
-                              value={field.value || 1}
-                            >
-                              {getPriority?.map((item) => {
-                                return (
-                                  <MenuItem
-                                    key={item.priorityId}
-                                    value={item.priorityId}
-                                  >
-                                    {item.priority}
-                                  </MenuItem>
-                                )
-                              })}
-                            </Select>
-                            {/* {errors.categoryId && (
+              <Controller
+                name="typeId"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <FormControl sx={{ width: '100%' }}>
+                      <InputLabel id="task">Task type</InputLabel>
+                      <Select
+                        {...field}
+                        labelId="task"
+                        id="task"
+                        fullWidth
+                        label="Task type"
+                        value={field.value || 1}
+                      >
+                        {getTaskType?.map((item) => {
+                          return (
+                            <MenuItem key={item.id} value={item.id}>
+                              {item.taskType}
+                            </MenuItem>
+                          )
+                        })}
+                      </Select>
+                      {/* {errors.categoryId && (
                         <FormHelperText error>
                           {errors.categoryId.message}
                         </FormHelperText>
                       )} */}
-                          </FormControl>
-                        )
-                      }}
-                    />
-
-                    <Controller
-                      name="typeId"
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl sx={{ width: '100%' }}>
-                            <InputLabel id="task">Task type</InputLabel>
-                            <Select
-                              {...field}
-                              labelId="task"
-                              id="task"
-                              fullWidth
-                              label="Task type"
-                              value={field.value || 1}
-                            >
-                              {getTaskType?.map((item) => {
-                                return (
-                                  <MenuItem key={item.id} value={item.id}>
-                                    {item.taskType}
-                                  </MenuItem>
-                                )
-                              })}
-                            </Select>
-                            {/* {errors.categoryId && (
-                        <FormHelperText error>
-                          {errors.categoryId.message}
-                        </FormHelperText>
-                      )} */}
-                          </FormControl>
-                        )
-                      }}
-                    />
-                  </Stack>
-                  <Stack direction={isMobile ? 'column' : 'row'} sx={{ my: 2 }}>
-                    <Grid
-                      container
-                      spacing={2}
-                      direction={isMobile ? 'column' : 'row'}
-                    >
-                      <Grid item sm={12} lg={6}>
-                        <Stack direction="column">
-                          <InputLabel id="time-tracking">
-                            Time tracking
-                          </InputLabel>
-                          <Slider
-                            aria-label="Time tracking"
-                            defaultValue={
-                              taskDetail?.timeTrackingRemaining || 0
-                            }
-                            sx={{ ml: 1.5, width: 'calc(100% - 12px)' }}
-                            onChange={(event, newValue) => {
-                              setTimeTrackingSpent(newValue)
-                              handleTimeTrackingSpentChange(newValue)
-                            }}
-                          />
-                        </Stack>
-                      </Grid>
-                      <Grid item sm={12} lg={6}>
-                        <Stack direction="row" spacing={2}>
-                          <TextField
-                            label="Time tracking spent"
-                            type="number"
-                            fullWidth
-                            {...register('timeTrackingSpent')}
-                            onChange={(event) =>
-                              handleTimeTrackingSpentChange(event.target.value)
-                            }
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                  h
-                                </InputAdornment>
-                              ),
-                            }}
-                          />{' '}
-                          <TextField
-                            label="Time tracking remaining"
-                            type="number"
-                            fullWidth
-                            {...register('timeTrackingRemaining')}
-                            onChange={(event) =>
-                              setTimeTrackingRemaining(event.target.value)
-                            }
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                  h
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        </Stack>
-                      </Grid>
-                    </Grid>
-                  </Stack>
-                </AccordionDetails>
-              </Accordion>
-              <Stack
+                    </FormControl>
+                  )
+                }}
+              />
+            </Stack>
+            <Stack direction={isMobile ? 'column' : 'row'} sx={{ my: 2 }}>
+              <Grid
+                container
+                spacing={2}
                 direction={isMobile ? 'column' : 'row'}
-                spacing={isMobile ? 2 : 2}
-                sx={{ mt: 2 }}
-                justifyContent={'flex-start'}
               >
-                <LoadingButton
-                  variant="contained"
-                  size="large"
-                  type="submit"
-                  fullWidth
-                >
-                  Update task
-                </LoadingButton>
-                <Button
-                  variant="contained"
-                  size="large"
-                  fullWidth
-                  color="error"
-                  onClick={handleClose}
-                >
-                  Cancel
-                </Button>
-              </Stack>
-            </form>
-          </Box>
-        </Grid>
-      </Grid>
+                <Grid item sm={12} lg={6}>
+                  <Stack direction="column">
+                    <InputLabel id="time-tracking">Time tracking</InputLabel>
+                    <Slider
+                      aria-label="Time tracking"
+                      defaultValue={taskDetail?.timeTrackingRemaining || 0}
+                      sx={{ ml: 1.5, width: 'calc(100% - 12px)' }}
+                      onChange={(event, newValue) => {
+                        setTimeTrackingSpent(newValue)
+                        handleTimeTrackingSpentChange(newValue)
+                      }}
+                    />
+                  </Stack>
+                </Grid>
+                <Grid item sm={12} lg={6}>
+                  <Stack direction="row" spacing={2}>
+                    <TextField
+                      label="Time tracking spent"
+                      type="number"
+                      fullWidth
+                      {...register('timeTrackingSpent')}
+                      onChange={(event) =>
+                        handleTimeTrackingSpentChange(event.target.value)
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">h</InputAdornment>
+                        ),
+                      }}
+                    />{' '}
+                    <TextField
+                      label="Time tracking remaining"
+                      type="number"
+                      fullWidth
+                      {...register('timeTrackingRemaining')}
+                      onChange={(event) =>
+                        setTimeTrackingRemaining(event.target.value)
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">h</InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Stack>
+                </Grid>
+              </Grid>
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
+
+        <Stack
+          direction={isMobile ? 'column' : 'row'}
+          spacing={isMobile ? 2 : 2}
+          sx={{ mt: 2 }}
+          justifyContent={'flex-start'}
+        >
+          <LoadingButton
+            variant="contained"
+            size="large"
+            type="submit"
+            fullWidth
+          >
+            Update task
+          </LoadingButton>
+          <Button
+            variant="contained"
+            size="large"
+            fullWidth
+            color="error"
+            onClick={handleClose}
+          >
+            Cancel
+          </Button>
+        </Stack>
+      </form>
     </Box>
   )
 }
