@@ -17,13 +17,12 @@ import Iconify from '../../../components/iconify'
 import ModalView from '../../../components/modal/modal'
 import AssignUserTask from './AssignUserTask'
 import RemoveUserTask from './RemoveUserTask'
-import TaskDetail from './TaskDetail'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Swal from 'sweetalert2'
 import { removeTaskAPI } from '../../../../../apis/taskAPI'
 import EditTask from '../edit-task'
 
-const ListTask = ({ listTaskDetail, ListProjectDetail }) => {
+const ListTask = ({ listTaskDetail }) => {
   const [openModal, setOpenModal] = useState(false)
   const [taskId, setTaskId] = useState(null)
   const queryClient = useQueryClient()
@@ -94,7 +93,7 @@ const ListTask = ({ listTaskDetail, ListProjectDetail }) => {
   return (
     <>
       {listTaskDetail?.map((task) => (
-        <Card key={task.taskId} sx={{my:1}}>
+        <Card key={task.taskId} sx={{ my: 1 }}>
           <CardHeader
             sx={{
               p: '0.5rem 1rem',
@@ -167,7 +166,7 @@ const ListTask = ({ listTaskDetail, ListProjectDetail }) => {
 
       {/* Xử lý modal */}
       <ModalView open={openModal} handleClose={handleCloseModal}>
-        <EditTask handleCloseModal={handleCloseModal} taskId={taskId} />
+        <EditTask handleClose={handleCloseModal} taskId={taskId} />
       </ModalView>
 
       <PopOver

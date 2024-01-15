@@ -19,6 +19,7 @@ import Swal from 'sweetalert2'
 import ModalView from '../../components/modal/modal'
 import { deleteUserAPI } from '../../../../apis/userAPI'
 import { LoadingButton } from '@mui/lab'
+import PopOver from '../../components/popover/PopOver'
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({
@@ -32,17 +33,21 @@ export default function UserTableRow({
 }) {
   const queryClient = useQueryClient()
 
-  const [open, setOpen] = useState(null)
+  const [openMenu, setOpenMenu] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   const handleOpenModal = () => setOpenModal(true)
   const handleCloseModal = () => setOpenModal(false)
+  const [selectedPopover, setSelectedPopover] = useState(null)
 
   const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget)
+    setOpenMenu(event.currentTarget)
+    setSelectedPopover(type)
   }
 
   const handleCloseMenu = () => {
-    setOpen(null)
+    setOpenMenu(false)
+
+    setSelectedPopover(type)
   }
 
   const { mutate: deleteUser, isPending } = useMutation({
@@ -105,43 +110,16 @@ export default function UserTableRow({
         <TableCell>{phoneNumber}</TableCell>
 
         <TableCell align="right">
-          <IconButton onClick={handleOpenMenu}>
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton>
-        </TableCell>
-      </TableRow>
-
-      <Popover
-        open={!!open}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: { width: 140, textAlign: 'right' },
-        }}
-      >
-        <MenuItem onClick={handleCloseMenu}>
-          <Button fullWidth onClick={handleOpenModal}>
-            <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
-            Edit
-          </Button>
-        </MenuItem>
-        <MenuItem onClick={handleCloseMenu}>
           <LoadingButton
+            variant="contained"
+            color='error'
             loading={isPending}
-            sx={{ color: 'error.main' }}
-            fullWidth
             onClick={() => handleDeleteUser(userId)}
           >
-            <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
-            Delete
+            <Iconify icon="eva:trash-2-outline" />
           </LoadingButton>
-        </MenuItem>
-      </Popover>
-      <ModalView open={openModal} handleClose={handleCloseModal}>
-        {/* <UserEdit userId={userId} /> */}
-      </ModalView>
+        </TableCell>
+      </TableRow>
     </>
   )
 }

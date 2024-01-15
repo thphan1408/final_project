@@ -233,7 +233,7 @@ export default function ProjectTableRow({
             >
               <Button fullWidth onClick={handleOpenModal} size="large">
                 <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
-                Sửa
+                Edit
               </Button>
               <LoadingButton
                 sx={{ color: 'error.main' }}
@@ -244,7 +244,7 @@ export default function ProjectTableRow({
                 }}
               >
                 <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
-                Xóa
+                Delete
               </LoadingButton>
             </Stack>
           </>

@@ -55,7 +55,7 @@ const AssignUserProject = ({ projectId, members, handleCloseMenu }) => {
       Swal.fire({
         icon: 'error',
         title: error.content,
-        text: error.message,
+        // text: error.message,
         confirmButtonText: 'Ok',
       })
     },
