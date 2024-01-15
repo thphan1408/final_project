@@ -77,3 +77,20 @@ export const removeTaskAPI = async (id) => {
     }
   }
 }
+
+export const updateTaskAPI = async (payload) => {
+  try {
+    const response = await fetcher.post('/Project/updateTask', payload)
+    return response.data.content
+  } catch (error) {
+    if (error.response && error.response.status) {
+      const errorData = error.response.data
+      if (errorData.content) {
+        throw {
+          content: errorData.content,
+          message: errorData.message,
+        }
+      }
+    }
+  }
+}
