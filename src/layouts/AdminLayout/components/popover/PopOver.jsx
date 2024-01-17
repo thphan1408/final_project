@@ -9,7 +9,7 @@ const PopOver = (props) => {
       open={!!openMenu}
       anchorEl={openMenu}
       onClose={
-        handleCloseMenu && selectedPopover
+        handleCloseMenu || selectedPopover
           ? () => handleCloseMenu(selectedPopover)
           : null
       }

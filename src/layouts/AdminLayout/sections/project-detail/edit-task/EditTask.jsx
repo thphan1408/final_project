@@ -69,7 +69,6 @@ const EditTask = ({ handleClose, taskId }) => {
     queryFn: () => getTaskDetailAPI(taskId),
     enabled: !!taskId,
   })
-  console.log('taskDetail: ', taskDetail)
 
   const { data: getStatus } = useQuery({
     queryKey: ['get-all-status'],
@@ -173,7 +172,7 @@ const EditTask = ({ handleClose, taskId }) => {
       handleClose()
       Swal.fire({
         icon: 'success',
-        title: 'Success create new task',
+        title: 'Update task successfully',
         confirmButtonText: 'Ok',
       }).then((result) => {
         if (result.isConfirmed) {
