@@ -26,10 +26,10 @@ const navConfig = [
     path: 'user',
     icon: icon('ic_user'),
   },
-  {
-    title: `Project Detail`,
-    path: `project-detail/:id`,
-  },
+  // {
+  //   title: `Project Detail`,
+  //   path: `project-detail/:id`,
+  // },
   // {
   //   title: 'Profile Management',
   //   path: 'profile',

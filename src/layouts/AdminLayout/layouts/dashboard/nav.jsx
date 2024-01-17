@@ -140,45 +140,10 @@ Nav.propTypes = {
 
 function NavItem({ item }) {
   const pathname = usePathname()
-  const { id } = useParams()
 
-  // Khởi tạo state để lưu trữ giá trị storedId
-  const [newStoredId, setNewStoredId] = useState(null)
+  const itemPath = item.path
 
-  useEffect(() => {
-    if (id) {
-      localStorage.setItem('projectId', id)
-      setNewStoredId(id)
-    }
-  }, [id])
-
-  // Xóa storedId khi người dùng thoát khỏi trang
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      localStorage.removeItem('projectId')
-    }
-
-    window.addEventListener('beforeunload', handleBeforeUnload)
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload)
-    }
-  }, [])
-
-  useEffect(() => {
-    const storedId = localStorage.getItem('projectId')
-    setNewStoredId(storedId) // Cập nhật storedId trong state
-  }, [])
-
-  const itemPath =
-    item.path === 'project-detail/:id'
-      ? `/admin/project-detail/${newStoredId}`
-      : item.path
-
-  const active =
-    item.path === 'project-detail/:id'
-      ? newStoredId === id
-      : pathname.endsWith(item.path)
+  const active = pathname.endsWith(item.path)
 
   return (
     <ListItemButton

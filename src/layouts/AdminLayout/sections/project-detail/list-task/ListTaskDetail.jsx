@@ -21,14 +21,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Swal from 'sweetalert2'
 import { removeTaskAPI } from '../../../../../apis/taskAPI'
 import EditTask from '../edit-task'
+import { LoadingButton } from '@mui/lab'
 
 const ListTask = ({ listTaskDetail }) => {
-  const [openModal, setOpenModal] = useState(false)
-  const [taskId, setTaskId] = useState(null)
   const queryClient = useQueryClient()
 
+  const [openModal, setOpenModal] = useState(false)
+  const [taskId, setTaskId] = useState(null)
   const [openMenu, setOpenMenu] = useState(null)
-  const [selectedPopover, setSelectedPopover] = useState(null)
 
   const handleOpenModal = (taskId) => {
     return () => {
@@ -39,17 +39,15 @@ const ListTask = ({ listTaskDetail }) => {
 
   const handleCloseModal = () => setOpenModal(false)
 
-  const handleOpenMenu = (event, type) => {
+  const handleOpenMenu = (event) => {
     setOpenMenu(event.currentTarget)
-    setSelectedPopover(type)
   }
 
-  const handleCloseMenu = (type) => {
-    setOpenMenu(false)
-    setSelectedPopover(type)
+  const handleCloseMenu = () => {
+    setOpenMenu(null)
   }
 
-  const { mutate: removeTask } = useMutation({
+  const { mutate: removeTask, isPending } = useMutation({
     mutationFn: (id) => removeTaskAPI(id),
     onSuccess: () => {
       Swal.fire({
@@ -90,99 +88,114 @@ const ListTask = ({ listTaskDetail }) => {
     })
   }
 
-  return (
-    <>
-      {listTaskDetail?.map((task) => (
-        <Card key={task.taskId} sx={{ my: 1 }}>
-          <CardHeader
-            sx={{
-              p: '0.5rem 1rem',
-            }}
-            title={
-              <Typography
-                sx={{
-                  fontSize: '1rem',
-                  color: '#212B36',
-                  fontWeight: 'bold',
-                  mb: 2,
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease-in-out',
-                  '&:hover': {
-                    color: '#red',
-                  },
-                }}
-                onClick={handleOpenModal(task.taskId)}
-                className={'truncate'}
-              >
-                {task.taskName}
-              </Typography>
-            }
-            action={
-              <IconButton
-                onClick={() => {
-                  handleRemoveTask(task.taskId)
-                }}
-              >
-                <Iconify icon="eva:trash-2-outline" />
-              </IconButton>
-            }
-          />
-          <CardContent>
-            <Stack
-              direction="row"
-              justifyContent={'space-between'}
-              alignItems={'center'}
+  return listTaskDetail?.map((task, index) => (
+    <Box key={index}>
+      <Card key={task.taskId} sx={{ my: 1 }}>
+        <CardHeader
+          sx={{
+            p: '0.5rem 1rem',
+          }}
+          title={
+            <Typography
+              sx={{
+                fontSize: '1rem',
+                color: '#212B36',
+                fontWeight: 'bold',
+              }}
+              className={'truncate'}
             >
-              <Label
-                color={
-                  task.priorityTask.priority === 'High'
-                    ? 'error'
-                    : task.priorityTask.priority === 'Medium'
-                    ? 'warning'
-                    : task.priorityTask.priority === 'Low'
-                    ? 'success'
-                    : 'default'
-                }
-                sx={{ fontSize: '1rem' }}
-              >
-                {task.priorityTask.priority}
-              </Label>
-              <Stack direction={'row'}>
-                <AvatarGroup max={2} sx={{ cursor: 'pointer' }}>
-                  {task.assigness?.map((assign) => (
-                    <Avatar
-                      key={assign.id}
-                      src={assign.avatar}
-                      alt={assign.name}
-                      sx={{ width: 35, height: 35 }}
-                    />
-                  ))}
-                </AvatarGroup>
-              </Stack>
+              {task.taskName}
+            </Typography>
+          }
+          action={
+            <IconButton onClick={handleOpenMenu}>
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          }
+        />
+        <CardContent>
+          <Stack
+            direction="row"
+            justifyContent={'space-between'}
+            alignItems={'center'}
+          >
+            <Label
+              color={
+                task.priorityTask.priority === 'High'
+                  ? 'error'
+                  : task.priorityTask.priority === 'Medium'
+                  ? 'warning'
+                  : task.priorityTask.priority === 'Low'
+                  ? 'success'
+                  : 'default'
+              }
+              sx={{ fontSize: '1rem' }}
+            >
+              {task.priorityTask.priority}
+            </Label>
+            <Stack direction={'row'}>
+              <AvatarGroup max={2} sx={{ cursor: 'pointer' }}>
+                {task.assigness?.map((assign) => (
+                  <Avatar
+                    key={assign.id}
+                    src={assign.avatar}
+                    alt={assign.name}
+                    sx={{ width: 35, height: 35 }}
+                  />
+                ))}
+              </AvatarGroup>
             </Stack>
-          </CardContent>
-        </Card>
-      ))}
-
-      {/* Xử lý modal */}
-      <ModalView open={openModal} handleClose={handleCloseModal}>
-        <EditTask handleClose={handleCloseModal} taskId={taskId} />
-      </ModalView>
-
-      <PopOver
-        openMenu={openMenu}
-        selectedPopover={selectedPopover}
-        handleCloseMenu={handleCloseMenu}
-      >
-        {/* Xử lý assignUserTask và removeUserTask */}
-        {selectedPopover === 'assignUserTask' ? (
-          <AssignUserTask handleCloseMenu={handleCloseMenu} />
-        ) : (
-          <RemoveUserTask handleCloseMenu={handleCloseMenu} />
-        )}
+          </Stack>
+        </CardContent>
+      </Card>
+      <PopOver openMenu={openMenu} handleCloseMenu={handleCloseMenu}>
+        <Box>
+          <Stack
+            direction={'column'}
+            alignItems={'center'}
+            sx={{ width: '120px', p: 1 }}
+            spacing={0.3}
+          >
+            <Button
+              fullWidth
+              onClick={handleOpenModal(task.taskId)}
+              size="large"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+              Edit
+            </Button>
+            <LoadingButton
+              sx={{
+                color: 'error.main',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+              fullWidth
+              size="large"
+              loading={isPending}
+              onClick={() => {
+                handleRemoveTask(task.taskId)
+              }}
+            >
+              <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+              Delete
+            </LoadingButton>
+          </Stack>
+          <ModalView open={openModal} handleClose={handleCloseModal}>
+            <EditTask
+              taskId={task.taskId}
+              handleClose={handleCloseModal}
+              handleCloseMenu={handleCloseMenu}
+            />
+          </ModalView>
+        </Box>
       </PopOver>
-    </>
-  )
+    </Box>
+  ))
 }
 
 export default ListTask
