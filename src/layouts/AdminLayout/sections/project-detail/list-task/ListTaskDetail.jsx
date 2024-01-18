@@ -15,36 +15,34 @@ import Label from '../../../components/label'
 import PopOver from '../../../components/popover/PopOver'
 import Iconify from '../../../components/iconify'
 import ModalView from '../../../components/modal/modal'
-import AssignUserTask from './AssignUserTask'
 import RemoveUserTask from './RemoveUserTask'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Swal from 'sweetalert2'
 import { removeTaskAPI } from '../../../../../apis/taskAPI'
+
 import EditTask from '../edit-task'
 import { LoadingButton } from '@mui/lab'
 
-const ListTask = ({ listTaskDetail }) => {
+const ListTask = ({ task }) => {
   const queryClient = useQueryClient()
-
+  const [selectedPopover, setSelectedPopover] = useState(null)
   const [openModal, setOpenModal] = useState(false)
-  const [taskId, setTaskId] = useState(null)
   const [openMenu, setOpenMenu] = useState(null)
 
-  const handleOpenModal = (taskId) => {
-    return () => {
-      setTaskId(taskId)
-      setOpenModal(true)
-    }
+  const handleOpenModal = () => {
+    setOpenModal(true)
   }
 
   const handleCloseModal = () => setOpenModal(false)
 
-  const handleOpenMenu = (event) => {
+  const handleOpenMenu = (event, type) => {
     setOpenMenu(event.currentTarget)
+    setSelectedPopover(type)
   }
 
-  const handleCloseMenu = () => {
+  const handleCloseMenu = (type) => {
     setOpenMenu(null)
+    // setSelectedPopover(type)
   }
 
   const { mutate: removeTask, isPending } = useMutation({
@@ -73,7 +71,6 @@ const ListTask = ({ listTaskDetail }) => {
 
   const handleRemoveTask = (id) => {
     handleCloseMenu()
-
     Swal.fire({
       icon: 'warning',
       title: 'Do you want to remove task from the project?',
@@ -88,68 +85,85 @@ const ListTask = ({ listTaskDetail }) => {
     })
   }
 
-  return listTaskDetail?.map((task, index) => (
-    <Box key={index}>
-      <Card key={task.taskId} sx={{ my: 1 }}>
-        <CardHeader
-          sx={{
-            p: '0.5rem 1rem',
-          }}
-          title={
-            <Typography
-              sx={{
-                fontSize: '1rem',
-                color: '#212B36',
-                fontWeight: 'bold',
-              }}
-              className={'truncate'}
+  return (
+    <>
+      <Box key={task.taskId}>
+        <Card sx={{ my: 1 }}>
+          <CardHeader
+            sx={{
+              p: '0.5rem 1rem',
+            }}
+            title={
+              <Typography
+                sx={{
+                  fontSize: '1rem',
+                  color: '#212B36',
+                  fontWeight: 'bold',
+                }}
+                className={'truncate'}
+              >
+                {task.taskName}
+              </Typography>
+            }
+            action={
+              <IconButton
+                onClick={(event) => {
+                  handleOpenMenu(event, 'action')
+                }}
+              >
+                <Iconify icon="eva:more-vertical-fill" />
+              </IconButton>
+            }
+          />
+          <CardContent>
+            <Stack
+              direction="row"
+              justifyContent={'space-between'}
+              alignItems={'center'}
             >
-              {task.taskName}
-            </Typography>
-          }
-          action={
-            <IconButton onClick={handleOpenMenu}>
-              <Iconify icon="eva:more-vertical-fill" />
-            </IconButton>
-          }
-        />
-        <CardContent>
-          <Stack
-            direction="row"
-            justifyContent={'space-between'}
-            alignItems={'center'}
-          >
-            <Label
-              color={
-                task.priorityTask.priority === 'High'
-                  ? 'error'
-                  : task.priorityTask.priority === 'Medium'
-                  ? 'warning'
-                  : task.priorityTask.priority === 'Low'
-                  ? 'success'
-                  : 'default'
-              }
-              sx={{ fontSize: '1rem' }}
-            >
-              {task.priorityTask.priority}
-            </Label>
-            <Stack direction={'row'}>
-              <AvatarGroup max={2} sx={{ cursor: 'pointer' }}>
-                {task.assigness?.map((assign) => (
-                  <Avatar
-                    key={assign.id}
-                    src={assign.avatar}
-                    alt={assign.name}
-                    sx={{ width: 35, height: 35 }}
-                  />
-                ))}
-              </AvatarGroup>
+              <Label
+                color={
+                  task.priorityTask.priority === 'High'
+                    ? 'error'
+                    : task.priorityTask.priority === 'Medium'
+                    ? 'warning'
+                    : task.priorityTask.priority === 'Low'
+                    ? 'success'
+                    : 'default'
+                }
+                sx={{ fontSize: '1rem' }}
+              >
+                {task.priorityTask.priority}
+              </Label>
+              <Stack direction={'row'}>
+                <AvatarGroup
+                  max={2}
+                  sx={{ cursor: 'pointer' }}
+                  onClick={(event) => {
+                    handleOpenMenu(event, 'removeUser')
+                  }}
+                >
+                  {task.assigness?.map((assign) => (
+                    <Avatar
+                      key={assign.id}
+                      src={assign.avatar}
+                      alt={assign.name}
+                      // sx={{ width: 35, height: 35 }}
+                    />
+                  ))}
+                </AvatarGroup>
+              </Stack>
             </Stack>
-          </Stack>
-        </CardContent>
-      </Card>
-      <PopOver openMenu={openMenu} handleCloseMenu={handleCloseMenu}>
-        <Box>
+          </CardContent>
+        </Card>
+      </Box>
+
+      <PopOver
+        openMenu={openMenu}
+        handleCloseMenu={handleCloseMenu}
+        selectedPopover={selectedPopover}
+      >
+        {selectedPopover === 'action' ? (
           <Stack
             direction={'column'}
             alignItems={'center'}
@@ -158,7 +172,10 @@ const ListTask = ({ listTaskDetail }) => {
           >
             <Button
               fullWidth
-              onClick={handleOpenModal(task.taskId)}
+              onClick={() => {
+                handleOpenModal()
+                handleCloseMenu()
+              }}
               size="large"
               sx={{
                 display: 'flex',
@@ -185,17 +202,20 @@ const ListTask = ({ listTaskDetail }) => {
               Delete
             </LoadingButton>
           </Stack>
-          <ModalView open={openModal} handleClose={handleCloseModal}>
-            <EditTask
-              taskId={task.taskId}
-              handleClose={handleCloseModal}
-              handleCloseMenu={handleCloseMenu}
-            />
-          </ModalView>
-        </Box>
+        ) : (
+          <RemoveUserTask listTask={task} handleCloseMenu={handleCloseMenu} />
+        )}
       </PopOver>
-    </Box>
-  ))
+
+      <ModalView open={openModal} handleClose={handleCloseModal}>
+        <EditTask
+          taskId={task.taskId}
+          handleClose={handleCloseModal}
+          handleCloseMenu={handleCloseMenu}
+        />
+      </ModalView>
+    </>
+  )
 }
 
 export default ListTask

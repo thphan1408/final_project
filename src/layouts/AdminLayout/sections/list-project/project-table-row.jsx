@@ -231,7 +231,14 @@ export default function ProjectTableRow({
               sx={{ width: '120px', p: 1 }}
               spacing={0.3}
             >
-              <Button fullWidth onClick={handleOpenModal} size="large">
+              <Button
+                fullWidth
+                onClick={() => {
+                  handleOpenModal()
+                  handleCloseMenu()
+                }}
+                size="large"
+              >
                 <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
                 Edit
               </Button>

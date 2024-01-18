@@ -27,7 +27,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, get, useForm } from 'react-hook-form'
 import ReactQuill from 'react-quill'
 import { getAllStatusAPI } from '../../../../../apis/statusAPI'
 import '../../css/quill.css'
@@ -105,7 +105,7 @@ const EditTask = ({ handleClose, taskId }) => {
     // formState: { errors },
   } = useForm({
     defaultValues: {
-      listUserAsign: taskDetail?.assigness,
+      listUserAsign: taskDetail?.assigness || [],
       taskId: taskDetail?.taskId,
       taskName: taskDetail?.taskName,
       description: taskDetail?.description,
@@ -131,14 +131,6 @@ const EditTask = ({ handleClose, taskId }) => {
     setValue('timeTrackingRemaining', remaining >= 0 ? remaining : 0)
   }
 
-  const handleChange = (event) => {
-    const selectedUserIds = event.target.value
-    setSelectedUsers(selectedUserIds)
-
-    // Cập nhật giá trị cho `listUserAsign`
-    // setValue('listUserAsign', selectedUserIds)
-  }
-
   useEffect(() => {
     setValue('listUserAsign', taskDetail?.assigness || []),
       setValue('taskName', taskDetail?.taskName || ' '),
@@ -153,6 +145,14 @@ const EditTask = ({ handleClose, taskId }) => {
       setValue('taskId', taskDetail?.taskId),
       setValue('priorityId', taskDetail?.priorityId)
   }, [taskId, projectId, taskDetail])
+
+  const handleChange = (event) => {
+    const selectedUserIds = event.target.value
+    setSelectedUsers(selectedUserIds)
+
+    // Cập nhật giá trị cho `listUserAsign`
+    setValue('listUserAsign', selectedUserIds)
+  }
 
   // set value cho slider
   useEffect(() => {
@@ -192,21 +192,20 @@ const EditTask = ({ handleClose, taskId }) => {
   })
 
   const onSubmit = (values) => {
-    console.log('values:', values)
-    // handleClose()
-    // Swal.fire({
-    //   title: 'Are you sure?',
-    //   text: 'Do you want to create this task?',
-    //   icon: 'question',
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Yes',
-    //   cancelButtonText: 'No',
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     updateTask(values)
-    //   }
-    //   return
-    // })
+    handleClose()
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to create this task?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        updateTask(values)
+      }
+      return
+    })
   }
 
   return (
@@ -304,7 +303,7 @@ const EditTask = ({ handleClose, taskId }) => {
                     id="assignUserTask"
                     fullWidth
                     multiple
-                    value={selectedUsers || []}
+                    value={selectedUsers}
                     onChange={handleChange}
                     input={<OutlinedInput label="Assigness" />}
                     renderValue={(selected) => {
@@ -326,6 +325,7 @@ const EditTask = ({ handleClose, taskId }) => {
                     ))}
                   </Select>
                 </FormControl>
+
                 <AvatarGroup max={3} sx={{ mt: 2 }}>
                   {getAllProjectDetail?.members
                     ?.filter((user) => selectedUsers.includes(user.userId))

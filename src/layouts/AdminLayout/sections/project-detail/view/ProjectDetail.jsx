@@ -14,7 +14,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material'
-import React, { useState } from 'react'
+import React, { lazy, useState } from 'react'
 import Iconify from '../../../components/iconify'
 import ModalView from '../../../components/modal/modal'
 import { useParams } from 'react-router-dom'
@@ -23,7 +23,7 @@ import { applyFilter, getComparator } from '../utils'
 import Label from '../../../components/label'
 import { useQuery } from '@tanstack/react-query'
 import { getProjectDetailAPI } from '../../../../../apis/projectAPI'
-import ListTaskDetail from '../list-task'
+import ListTaskDetail from '../list-task/ListTaskDetail'
 import CreateTask from '../create-task'
 
 const ProjectDetail = () => {
@@ -63,11 +63,16 @@ const ProjectDetail = () => {
           justifyContent="space-between"
           mb={5}
         >
-          <Stack direction={'row'} spacing={3} alignItems={'center'}>
-            <Typography variant="h4">
+          <Stack
+            direction={'row'}
+            spacing={1}
+            alignItems={'center'}
+            sx={{ mr: 3 }}
+          >
+            <Typography variant="h4" className="truncate">
               {ListProjectDetail?.projectName}
             </Typography>
-            {/* <AvatarGroup max={3}>
+            <AvatarGroup max={3}>
               {ListProjectDetail?.members?.map((member) => {
                 return (
                   <Avatar
@@ -77,9 +82,8 @@ const ProjectDetail = () => {
                   />
                 )
               })}
-            </AvatarGroup> */}
+            </AvatarGroup>
           </Stack>
-
           <Button
             variant="contained"
             color="inherit"
@@ -126,23 +130,9 @@ const ProjectDetail = () => {
                     }
                   />
                   <CardContent>
-                    {listTask?.lstTaskDeTail.length ? (
-                      <>
-                        <ListTaskDetail
-                          listTaskDetail={listTask.lstTaskDeTail}
-                          ListProjectDetail={ListProjectDetail}
-                        />
-                        {listTask?.lstTaskDeTail.length > 1 && (
-                          <>
-                            <Button variant="contained" sx={{ my: 2 }}>
-                              Load more
-                            </Button>
-                          </>
-                        )}
-                      </>
-                    ) : (
-                      '...'
-                    )}
+                    {listTask?.lstTaskDeTail.map((task) => (
+                      <ListTaskDetail key={task.taskId} task={task} />
+                    ))}
                   </CardContent>
                 </Card>
               </Grid>
