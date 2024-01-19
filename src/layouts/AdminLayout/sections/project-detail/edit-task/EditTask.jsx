@@ -89,6 +89,8 @@ const EditTask = ({ handleClose, taskId }) => {
   const [quillValues, setQuillValues] = useState('')
   const [timeTrackingRemaining, setTimeTrackingRemaining] = useState(0)
   const [projectName, setProjectName] = useState('')
+
+  //select box
   const [selectedUsers, setSelectedUsers] = useState([])
   const [timeTrackingSpent, setTimeTrackingSpent] = useState(
     taskDetail?.timeTrackingSpent || 0
@@ -119,6 +121,20 @@ const EditTask = ({ handleClose, taskId }) => {
     },
   })
 
+  //TESTING
+  /**
+   * async bug. please try:
+   * catch the state  of selected users first from asgined user => use effect : if ( assignUser)=>setSelectedUsers(assignUser), map and set name state
+   * then create a state of selected users name and use this state for selecting box
+   * docs: https://github.com/mui/material-ui/blob/v5.15.5/docs/data/material/components/selects/MultipleSelectCheckmarks.tsx
+   */
+
+  const checkSelected = (name) => {
+    if (selectedUsers) {
+      return selectedUsers?.map((item) => item.id).indexOf(name) !== -1
+    }
+  }
+
   const handleTimeTrackingSpentChange = (newValue) => {
     setTimeTrackingSpent(newValue)
 
@@ -143,15 +159,21 @@ const EditTask = ({ handleClose, taskId }) => {
       setValue('projectId', taskDetail?.projectId),
       setValue('typeId', taskDetail?.typeId),
       setValue('taskId', taskDetail?.taskId),
-      setValue('priorityId', taskDetail?.priorityId)
+      setValue('priorityId', taskDetail?.priorityId),
+      setSelectedUsers(taskDetail?.assigness || [])
   }, [taskId, projectId, taskDetail])
 
   const handleChange = (event) => {
-    const selectedUserIds = event.target.value
-    setSelectedUsers(selectedUserIds)
-
-    // Cập nhật giá trị cho `listUserAsign`
-    setValue('listUserAsign', selectedUserIds)
+    const current = event.target.value
+    // const currentMap = current.map((item) => {
+    //   if (typeof item === 'string') return item
+    //   // return selectedUsers.filter((user) => user.id === item).name
+    //   const changedUser = selectedUsers?.filter((user) => user.id === item)[0]
+    //   return changedUser.name
+    // })
+    console.log(current)
+    // console.log(currentMap)
+    // setSelectedUsers(currentMap)
   }
 
   // set value cho slider
@@ -303,22 +325,21 @@ const EditTask = ({ handleClose, taskId }) => {
                     id="assignUserTask"
                     fullWidth
                     multiple
-                    value={selectedUsers}
+                    value={selectedUsers.map((item) => item.name)}
                     onChange={handleChange}
                     input={<OutlinedInput label="Assigness" />}
-                    renderValue={(selected) => {
-                      const selectedUserNames = getAllProjectDetail?.members
-                        ?.filter((user) => selected.includes(user.userId))
-                        ?.map((user) => user.name)
-                      return selectedUserNames.join(', ')
-                    }}
+                    renderValue={(selected) => selected.join(', ')}
+                    // renderValue={(selected) => {
+                    //   const selectedUserNames = getAllProjectDetail?.members
+                    //     ?.filter((user) => selected.includes(user.userId))
+                    //     ?.map((user) => user.name)
+                    //   return selectedUserNames.join(', ')
+                    // }}
                     MenuProps={MenuProps}
                   >
                     {getAllProjectDetail?.members?.map((user) => (
-                      <MenuItem key={user.userId} value={user.userId}>
-                        <Checkbox
-                          checked={selectedUsers.includes(user.userId)}
-                        />
+                      <MenuItem key={user.userId} value={user.name}>
+                        <Checkbox checked={checkSelected(user.name)} />
                         {/* <Avatar src={user.avatar} sx={{ mr: 2 }} /> */}
                         <ListItemText primary={user.name} />
                       </MenuItem>
@@ -328,7 +349,9 @@ const EditTask = ({ handleClose, taskId }) => {
 
                 <AvatarGroup max={3} sx={{ mt: 2 }}>
                   {getAllProjectDetail?.members
-                    ?.filter((user) => selectedUsers.includes(user.userId))
+                    ?.filter((user) =>
+                      selectedUsers?.map((u) => u?.id).includes(user.userId)
+                    )
                     ?.map((user) => (
                       <Avatar
                         key={user.userId}
