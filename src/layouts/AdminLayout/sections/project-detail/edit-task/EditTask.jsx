@@ -204,21 +204,15 @@ const EditTask = ({ handleClose, taskId }) => {
       setValue('projectId', taskDetail?.projectId),
       setValue('typeId', taskDetail?.typeId),
       setValue('taskId', taskDetail?.taskId),
-      setValue('priorityId', taskDetail?.priorityId),
-      setSelectedUsers(taskDetail?.assigness || [])
+      setValue('priorityId', taskDetail?.priorityId)
   }, [taskId, projectId, taskDetail])
 
   const handleChange = (event) => {
-    const current = event.target.value
-    // const currentMap = current.map((item) => {
-    //   if (typeof item === 'string') return item
-    //   // return selectedUsers.filter((user) => user.id === item).name
-    //   const changedUser = selectedUsers?.filter((user) => user.id === item)[0]
-    //   return changedUser.name
-    // })
-    console.log(current)
-    // console.log(currentMap)
-    // setSelectedUsers(currentMap)
+    const selectedUserIds = event.target.value
+    setSelectedUsers(selectedUserIds)
+
+    // Cập nhật giá trị cho `listUserAsign`
+    setValue('listUserAsign', selectedUserIds)
   }
 
   // set value cho slider
@@ -562,21 +556,22 @@ const EditTask = ({ handleClose, taskId }) => {
                     id="assignUserTask"
                     fullWidth
                     multiple
-                    value={selectedUsers.map((item) => item.name)}
+                    value={selectedUsers}
                     onChange={handleChange}
                     input={<OutlinedInput label="Assigness" />}
-                    renderValue={(selected) => selected.join(', ')}
-                    // renderValue={(selected) => {
-                    //   const selectedUserNames = getAllProjectDetail?.members
-                    //     ?.filter((user) => selected.includes(user.userId))
-                    //     ?.map((user) => user.name)
-                    //   return selectedUserNames.join(', ')
-                    // }}
+                    renderValue={(selected) => {
+                      const selectedUserNames = getAllProjectDetail?.members
+                        ?.filter((user) => selected.includes(user.userId))
+                        ?.map((user) => user.name)
+                      return selectedUserNames.join(', ')
+                    }}
                     MenuProps={MenuProps}
                   >
                     {getAllProjectDetail?.members?.map((user) => (
-                      <MenuItem key={user.userId} value={user.name}>
-                        <Checkbox checked={checkSelected(user.name)} />
+                      <MenuItem key={user.userId} value={user.userId}>
+                        <Checkbox
+                          checked={selectedUsers.includes(user.userId)}
+                        />
                         {/* <Avatar src={user.avatar} sx={{ mr: 2 }} /> */}
                         <ListItemText primary={user.name} />
                       </MenuItem>
@@ -586,9 +581,7 @@ const EditTask = ({ handleClose, taskId }) => {
 
                 <AvatarGroup max={3} sx={{ mt: 2 }}>
                   {getAllProjectDetail?.members
-                    ?.filter((user) =>
-                      selectedUsers?.map((u) => u?.id).includes(user.userId)
-                    )
+                    ?.filter((user) => selectedUsers.includes(user.userId))
                     ?.map((user) => (
                       <Avatar
                         key={user.userId}
