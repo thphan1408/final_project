@@ -113,6 +113,8 @@ const EditTask = ({ handleClose, taskId }) => {
   const [quillValues, setQuillValues] = useState('')
   const [timeTrackingRemaining, setTimeTrackingRemaining] = useState(0)
   const [projectName, setProjectName] = useState('')
+
+  //select box
   const [selectedUsers, setSelectedUsers] = useState([])
   const [timeTrackingSpent, setTimeTrackingSpent] = useState(
     taskDetail?.timeTrackingSpent || 0
@@ -163,6 +165,20 @@ const EditTask = ({ handleClose, taskId }) => {
     resolver: yupResolver(schemaComment),
   })
   console.log('errors jkj: ', errors)
+
+  //TESTING
+  /**
+   * async bug. please try:
+   * catch the state  of selected users first from asgined user => use effect : if ( assignUser)=>setSelectedUsers(assignUser), map and set name state
+   * then create a state of selected users name and use this state for selecting box
+   * docs: https://github.com/mui/material-ui/blob/v5.15.5/docs/data/material/components/selects/MultipleSelectCheckmarks.tsx
+   */
+
+  const checkSelected = (name) => {
+    if (selectedUsers) {
+      return selectedUsers?.map((item) => item.id).indexOf(name) !== -1
+    }
+  }
 
   const handleTimeTrackingSpentChange = (newValue) => {
     setTimeTrackingSpent(newValue)
