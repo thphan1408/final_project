@@ -6,7 +6,6 @@ const DefaultLayout = () => {
   return (
     <>
       <Suspense>
-        <Header />
         <Outlet />
       </Suspense>
     </>
