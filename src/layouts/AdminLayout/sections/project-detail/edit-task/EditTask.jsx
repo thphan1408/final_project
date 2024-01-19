@@ -72,7 +72,6 @@ const MenuProps = {
 const EditTask = ({ handleClose, taskId }) => {
   const { id: projectId } = useParams()
   const { currentUser } = useAuth()
-  console.log('currentUser: ', currentUser)
   const { data: getAllProjectDetail } = useQuery({
     queryKey: ['get-all-project-for-task', projectId],
     queryFn: () => getProjectDetailAPI(projectId),
@@ -103,10 +102,10 @@ const EditTask = ({ handleClose, taskId }) => {
     enabled: !!taskId,
   })
 
-  useEffect(
-    () => console.log('getAllComment: ', getAllComment),
-    [getAllComment]
-  )
+  // useEffect(
+  //   () => console.log('getAllComment: ', getAllComment),
+  //   [getAllComment]
+  // )
   const theme = useTheme()
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -124,7 +123,7 @@ const EditTask = ({ handleClose, taskId }) => {
   const [openMenu, setOpenMenu] = useState(null)
   const [enableComment, setEnableComment] = useState(false)
   const [commentSelect, setCommentSelect] = useState(null)
-  console.log('commentSelect: ', commentSelect)
+
   const handleOpenMenu = (event, type) => {
     setOpenMenu(event.currentTarget)
     setSelectedPopover(type)
@@ -164,7 +163,6 @@ const EditTask = ({ handleClose, taskId }) => {
     },
     resolver: yupResolver(schemaComment),
   })
-  console.log('errors jkj: ', errors)
 
   //TESTING
   /**
@@ -372,7 +370,6 @@ const EditTask = ({ handleClose, taskId }) => {
                         type="submit"
                         onClick={(event) => {
                           handleOpenMenu(event, 'action')
-                          console.log('item', item)
                           // setCommentSelect(item)
                         }}
                       >
