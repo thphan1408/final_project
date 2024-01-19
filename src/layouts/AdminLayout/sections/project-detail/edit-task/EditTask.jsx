@@ -10,6 +10,7 @@ import {
   Checkbox,
   FormControl,
   Grid,
+  IconButton,
   InputAdornment,
   InputLabel,
   ListItemText,
@@ -23,6 +24,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material'
+import SendIcon from '@mui/icons-material/Send'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -43,6 +45,18 @@ import {
 } from '../../../../../apis/taskAPI'
 import Swal from 'sweetalert2'
 import Label from '../../../components/label'
+import { useAuth } from '../../../../../context/UserContext/UserContext'
+import {
+  deleteCommentAPI,
+  getAllCommentAPI,
+  insertCommentAPI,
+  updateCommentAPI,
+} from '../../../../../apis/commentAPI'
+import PopOver from '../../../components/popover/PopOver'
+import Iconify from '../../../components/iconify'
+import * as yup from 'yup'
+
+import { yupResolver } from '@hookform/resolvers/yup'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -57,7 +71,8 @@ const MenuProps = {
 
 const EditTask = ({ handleClose, taskId }) => {
   const { id: projectId } = useParams()
-
+  const { currentUser } = useAuth()
+  console.log('currentUser: ', currentUser)
   const { data: getAllProjectDetail } = useQuery({
     queryKey: ['get-all-project-for-task', projectId],
     queryFn: () => getProjectDetailAPI(projectId),
@@ -82,7 +97,16 @@ const EditTask = ({ handleClose, taskId }) => {
     queryKey: ['get-all-task-type'],
     queryFn: getAllTaskTypeAPI,
   })
+  const { data: getAllComment } = useQuery({
+    queryKey: ['get-all-comment', taskId],
+    queryFn: () => getAllCommentAPI(taskId),
+    enabled: !!taskId,
+  })
 
+  useEffect(
+    () => console.log('getAllComment: ', getAllComment),
+    [getAllComment]
+  )
   const theme = useTheme()
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -95,16 +119,34 @@ const EditTask = ({ handleClose, taskId }) => {
   const [timeTrackingSpent, setTimeTrackingSpent] = useState(
     taskDetail?.timeTrackingSpent || 0
   )
+  const [selectedPopover, setSelectedPopover] = useState(null)
+  const [openModal, setOpenModal] = useState(false)
+  const [openMenu, setOpenMenu] = useState(null)
+  const [enableComment, setEnableComment] = useState(false)
+  const [commentSelect, setCommentSelect] = useState(null)
+  console.log('commentSelect: ', commentSelect)
+  const handleOpenMenu = (event, type) => {
+    setOpenMenu(event.currentTarget)
+    setSelectedPopover(type)
+  }
+
+  const handleCloseMenu = (type) => {
+    setOpenMenu(null)
+    // setSelectedPopover(type)
+  }
 
   const queryClient = useQueryClient()
-
+  const schemaComment = yup.object({
+    comment: yup.string().required('Please enter comment'),
+  })
   const {
     handleSubmit,
     register,
     control,
     getValues,
     setValue,
-    // formState: { errors },
+    reset,
+    formState: { errors },
   } = useForm({
     defaultValues: {
       listUserAsign: taskDetail?.assigness || [],
@@ -118,8 +160,11 @@ const EditTask = ({ handleClose, taskId }) => {
       projectId: taskDetail?.projectId,
       typeId: taskDetail?.taskTypeDetail.typeId,
       priorityId: taskDetail?.priorityTask.priorityId,
+      contentComment: '',
     },
+    resolver: yupResolver(schemaComment),
   })
+  console.log('errors jkj: ', errors)
 
   //TESTING
   /**
@@ -186,6 +231,15 @@ const EditTask = ({ handleClose, taskId }) => {
     setProjectName(getAllProjectDetail?.projectName || '')
   }, [getAllProjectDetail])
 
+  useEffect(() => {
+    const findUserOnTask = taskDetail?.assigness?.findIndex(
+      (user) => user.id === currentUser?.id
+    )
+    if (findUserOnTask !== -1) {
+      setEnableComment(false)
+    }
+  }, [taskId, currentUser])
+
   const { mutate: updateTask, isPending } = useMutation({
     mutationFn: (values) => {
       return updateTaskAPI(values)
@@ -230,6 +284,53 @@ const EditTask = ({ handleClose, taskId }) => {
     })
   }
 
+  const { mutate: insertComment } = useMutation({
+    mutationFn: async (payload) => await insertCommentAPI(payload),
+    onSuccess: () => {
+      reset()
+      queryClient.invalidateQueries('get-all-comment')
+    },
+    onError: (error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Comment thất bại',
+        text: error.response.data.content || 'Có lỗi xảy ra khi thêm comment.',
+        confirmButtonText: 'Đồng ý',
+      })
+    },
+  })
+  const { mutate: updateComment } = useMutation({
+    mutationFn: async (payload) => await updateCommentAPI(payload),
+    onSuccess: () => {
+      reset()
+      queryClient.invalidateQueries('get-all-comment')
+    },
+    onError: (error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Cập nhật comment thất bại',
+        text:
+          error.response.data.content || 'Có lỗi xảy ra khi cập nhật comment.',
+        confirmButtonText: 'Đồng ý',
+      })
+    },
+  })
+
+  const { mutate: deleteComment } = useMutation({
+    mutationFn: async (payload) => await deleteCommentAPI(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries('get-all-comment')
+    },
+    onError: (error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Comment thất bại',
+        text: error.response.data.content || 'Có lỗi xảy ra khi thêm comment.',
+        confirmButtonText: 'Đồng ý',
+      })
+    },
+  })
+
   return (
     <Box
       sx={{
@@ -248,12 +349,148 @@ const EditTask = ({ handleClose, taskId }) => {
           </Label>
         </Typography>
       </Stack>
+      {!enableComment && (
+        <Box sx={{ my: 2 }}>
+          <Stack spacing={2} direction={'column'}>
+            <Typography variant="h5">Comment</Typography>
+            <Box>
+              {getAllComment?.map((item) => (
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  paddingY={1}
+                >
+                  <Grid item md={2}>
+                    <Avatar src={item?.user?.avatar} />
+                  </Grid>
+                  <Grid item md={9} direction="column">
+                    <Typography fontSize={16} fontWeight={700}>
+                      {item?.user.name}
+                    </Typography>
+                    {item?.contentComment}
+                  </Grid>
 
-      <Box sx={{ my: 2 }}>
-        <Stack spacing={2} direction={'column'}>
-          Comment nằm ở đây
-        </Stack>
-      </Box>
+                  {item?.user?.userId === currentUser?.id && (
+                    <Grid item md={1}>
+                      <IconButton
+                        type="submit"
+                        onClick={(event) => {
+                          handleOpenMenu(event, 'action')
+                          console.log('item', item)
+                          // setCommentSelect(item)
+                        }}
+                      >
+                        <Iconify icon="eva:more-vertical-fill" />
+                      </IconButton>
+                    </Grid>
+                  )}
+                  <PopOver
+                    openMenu={openMenu}
+                    handleCloseMenu={handleCloseMenu}
+                    selectedPopover={selectedPopover}
+                  >
+                    {selectedPopover === 'action' ? (
+                      <Stack
+                        direction={'column'}
+                        alignItems={'start'}
+                        sx={{ width: '110px', p: 1 }}
+                        spacing={0.3}
+                      >
+                        <LoadingButton
+                          type="button"
+                          fullWidth
+                          onClick={() => {
+                            handleCloseMenu()
+                            setValue(
+                              'contentComment',
+                              commentSelect.contentComment
+                            )
+                          }}
+                          size="small"
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'start',
+                          }}
+                        >
+                          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+                          Edit
+                        </LoadingButton>
+                        <LoadingButton
+                          sx={{
+                            color: 'error.main',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'start',
+                          }}
+                          fullWidth
+                          size="small"
+                          loading={isPending}
+                          onClick={() => {
+                            handleCloseMenu()
+                            deleteComment(commentSelect?.id)
+                          }}
+                        >
+                          <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+                          Delete
+                        </LoadingButton>
+                      </Stack>
+                    ) : (
+                      'abdh'
+                    )}
+                  </PopOver>
+                </Grid>
+              ))}
+            </Box>
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              paddingY={1}
+            >
+              <Grid item hidden={isMobile} md={2}>
+                <Avatar src={currentUser.avatar} />
+              </Grid>
+              <Grid item md={9}>
+                <form action="">
+                  <TextField
+                    disabled={enableComment}
+                    fullWidth
+                    placeholder="Add a comment"
+                    type="text"
+                    {...register('contentComment')}
+                    error={Boolean(errors.comment)}
+                    helperText={
+                      Boolean(errors.comment) && errors.comment.message
+                    }
+                  />
+                </form>
+              </Grid>
+              <Grid item md={1} textAlign="center">
+                <SendIcon
+                  onClick={() => {
+                    const contentComment = getValues('contentComment')
+                    let payload = { contentComment }
+                    if (commentSelect) {
+                      payload = { ...payload, id: commentSelect?.id }
+                      updateComment(payload)
+                    } else {
+                      payload = { ...payload, taskId }
+                      insertComment(payload)
+                    }
+                    setCommentSelect(null)
+                  }}
+                  style={{ cursor: 'pointer' }}
+                />
+              </Grid>
+            </Grid>
+          </Stack>
+        </Box>
+      )}
+
       <Box>
         <Accordion TransitionProps={{ unmountOnExit: true }} defaultExpanded>
           <AccordionSummary
