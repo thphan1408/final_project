@@ -123,7 +123,8 @@ const EditTask = ({ handleClose, taskId }) => {
   const [openMenu, setOpenMenu] = useState(null)
   const [enableComment, setEnableComment] = useState(false)
   const [commentSelect, setCommentSelect] = useState(null)
-
+  const [isEdit, setIsEdit] = useState(false)
+  console.log('isEdit: ', isEdit)
   const handleOpenMenu = (event, type) => {
     setOpenMenu(event.currentTarget)
     setSelectedPopover(type)
@@ -276,11 +277,15 @@ const EditTask = ({ handleClose, taskId }) => {
     })
   }
   const onSubmitComment = (values) => {
-    const payload = {
+    let payload = {
       contentComment: values?.contentComment,
       taskId: values?.taskId,
     }
-    insertComment(payload)
+    if (isEdit) {
+      payload = { ...payload, id: commentSelect?.id }
+      return updateComment(payload)
+    }
+    return insertComment(payload)
   }
 
   const { mutate: insertComment } = useMutation({
@@ -303,6 +308,7 @@ const EditTask = ({ handleClose, taskId }) => {
     onSuccess: () => {
       reset()
       queryClient.invalidateQueries('get-all-comment')
+      setIsEdit(false)
     },
     onError: (error) => {
       Swal.fire({
@@ -405,6 +411,7 @@ const EditTask = ({ handleClose, taskId }) => {
                               'contentComment',
                               commentSelect?.contentComment
                             )
+                            setIsEdit(true)
                           }}
                           size="small"
                           sx={{
@@ -429,6 +436,7 @@ const EditTask = ({ handleClose, taskId }) => {
                           onClick={() => {
                             handleCloseMenu()
                             deleteComment(commentSelect?.id)
+                            setIsEdit(true)
                           }}
                         >
                           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
@@ -478,9 +486,7 @@ const EditTask = ({ handleClose, taskId }) => {
                   </Grid>
                   <Grid item md={1}>
                     <IconButton type="submit">
-                      <SendIcon
-                        style={{ cursor: 'pointer' }}
-                      />
+                      <SendIcon style={{ cursor: 'pointer' }} />
                     </IconButton>
                   </Grid>
                 </form>
