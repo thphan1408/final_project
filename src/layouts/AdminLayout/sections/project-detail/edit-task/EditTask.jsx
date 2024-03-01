@@ -136,7 +136,7 @@ const EditTask = ({ handleClose, taskId }) => {
 
   const queryClient = useQueryClient()
   const schemaComment = yup.object({
-    comment: yup.string().required('Please enter comment'),
+    contentComment: yup.string().required('Please enter comment'),
   })
   const {
     handleSubmit,
@@ -275,6 +275,13 @@ const EditTask = ({ handleClose, taskId }) => {
       return
     })
   }
+  const onSubmitComment = (values) => {
+    const payload = {
+      contentComment: values?.contentComment,
+      taskId: values?.taskId,
+    }
+    insertComment(payload)
+  }
 
   const { mutate: insertComment } = useMutation({
     mutationFn: async (payload) => await insertCommentAPI(payload),
@@ -316,8 +323,8 @@ const EditTask = ({ handleClose, taskId }) => {
     onError: (error) => {
       Swal.fire({
         icon: 'error',
-        title: 'Comment thất bại',
-        text: error.response.data.content || 'Có lỗi xảy ra khi thêm comment.',
+        title: 'Xóa comment thất bại',
+        text: error.response.data.content || 'Có lỗi xảy ra khi xóa comment.',
         confirmButtonText: 'Đồng ý',
       })
     },
@@ -370,7 +377,7 @@ const EditTask = ({ handleClose, taskId }) => {
                         type="submit"
                         onClick={(event) => {
                           handleOpenMenu(event, 'action')
-                          // setCommentSelect(item)
+                          setCommentSelect(item)
                         }}
                       >
                         <Iconify icon="eva:more-vertical-fill" />
@@ -396,7 +403,7 @@ const EditTask = ({ handleClose, taskId }) => {
                             handleCloseMenu()
                             setValue(
                               'contentComment',
-                              commentSelect.contentComment
+                              commentSelect?.contentComment
                             )
                           }}
                           size="small"
@@ -438,44 +445,45 @@ const EditTask = ({ handleClose, taskId }) => {
             <Grid
               container
               direction="row"
-              justifyContent="space-between"
               alignItems="center"
+              justifyContent="space-between"
               paddingY={1}
             >
-              <Grid item hidden={isMobile} md={2}>
+              <Grid item md={2}>
                 <Avatar src={currentUser.avatar} />
               </Grid>
-              <Grid item md={9}>
-                <form action="">
-                  <TextField
-                    disabled={enableComment}
-                    fullWidth
-                    placeholder="Add a comment"
-                    type="text"
-                    {...register('contentComment')}
-                    error={Boolean(errors.comment)}
-                    helperText={
-                      Boolean(errors.comment) && errors.comment.message
-                    }
-                  />
-                </form>
-              </Grid>
-              <Grid item md={1} textAlign="center">
-                <SendIcon
-                  onClick={() => {
-                    const contentComment = getValues('contentComment')
-                    let payload = { contentComment }
-                    if (commentSelect) {
-                      payload = { ...payload, id: commentSelect?.id }
-                      updateComment(payload)
-                    } else {
-                      payload = { ...payload, taskId }
-                      insertComment(payload)
-                    }
-                    setCommentSelect(null)
+              <Grid item sm={9} md={10}>
+                <form
+                  onSubmit={handleSubmit(onSubmitComment)}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
                   }}
-                  style={{ cursor: 'pointer' }}
-                />
+                >
+                  <Grid item md={10}>
+                    <TextField
+                      disabled={enableComment}
+                      fullWidth
+                      placeholder="Add a comment"
+                      type="text"
+                      {...register('contentComment')}
+                      error={Boolean(errors.contentComment)}
+                      helperText={
+                        Boolean(errors.contentComment) &&
+                        errors.contentComment.message
+                      }
+                    />
+                  </Grid>
+                  <Grid item md={1}>
+                    <IconButton type="submit">
+                      <SendIcon
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </IconButton>
+                  </Grid>
+                </form>
               </Grid>
             </Grid>
           </Stack>
